@@ -63,7 +63,7 @@ const Analyzer = () => {
         formData.append('description', description);
       }
 
-      const { data } = await axios.post('http://localhost:5000/api/resume/analyze', formData, {
+      const { data } = await axios.post(`${import.meta.env.VITE_MY_API}/api/resume/analyze`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -93,7 +93,7 @@ const Analyzer = () => {
         formData.append('description', description);
       }
 
-      const { data } = await axios.post('http://localhost:5000/api/resume/rewrite', formData, {
+      const { data } = await axios.post(`${import.meta.env.VITE_MY_API}/api/resume/rewrite`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -126,7 +126,7 @@ const Analyzer = () => {
         formData.append('resume', file);
       }
 
-      const response = await axios.post('http://localhost:5000/api/resume/questions', formData, {
+      const response = await axios.post(`${import.meta.env.VITE_MY_API}/api/resume/questions`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
