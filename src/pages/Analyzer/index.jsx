@@ -7,10 +7,12 @@ const Analyzer = () => {
   const [description, setDescription] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isRewriting, setIsRewriting] = useState(false);
+  const [isGettingQuestions, setIsGettingQuestions] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [isRewriting, setIsRewriting] = useState(false);
   const [rewrittenResume, setRewrittenResume] = useState(null);
+  const [questions, setQuestions] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -106,6 +108,53 @@ const Analyzer = () => {
     }
   };
 
+  const handleGetQuestions = async () => {
+    if (!description) {
+      setError('Please provide a job description to get questions');
+      return;
+    }
+
+    setIsGettingQuestions(true);
+    setError(null);
+    setResult(null);
+    setRewrittenResume(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('description', description);
+      if (file) {
+        formData.append('resume', file);
+      }
+
+      const response = await axios.post('http://localhost:5000/api/resume/questions', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      console.log('Questions Response:', response.data);
+      const responseData = response.data;
+
+      if (typeof responseData === 'string') {
+        setQuestions(responseData);
+      } else if (responseData && typeof responseData === 'object') {
+        if (responseData.questions) {
+          setQuestions(responseData.questions);
+        } else if (responseData.result) {
+          setQuestions(responseData.result);
+        } else {
+          throw new Error('Invalid response format from server');
+        }
+      }
+    } catch (err) {
+      console.error('Questions error:', err);
+      console.error('Error details:', err.response?.data);
+      setError('Failed to get questions. Please try again.');
+    } finally {
+      setIsGettingQuestions(false);
+    }
+  };
+
   return (
     <div className="analyzer">
       <nav className="nav">
@@ -172,20 +221,27 @@ const Analyzer = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="mt-6 flex flex-wrap gap-4">
               <button
-                className={`btn btn-primary ${isAnalyzing ? 'loading' : ''}`}
+                className="btn btn-primary"
                 onClick={handleAnalyze}
-                disabled={!file || isAnalyzing}
+                disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
               >
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
               </button>
               <button
-                className={`btn btn-secondary ${isRewriting ? 'loading' : ''}`}
+                className="btn btn-secondary"
                 onClick={handleRewrite}
-                disabled={!file || isRewriting}
+                disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
               >
                 {isRewriting ? 'Rewriting...' : 'Rewrite Resume'}
+              </button>
+              <button
+                className="btn btn-accent"
+                onClick={handleGetQuestions}
+                disabled={!description || isAnalyzing || isRewriting || isGettingQuestions}
+              >
+                {isGettingQuestions ? 'Getting Questions...' : 'Get Interview Questions'}
               </button>
             </div>
 
@@ -219,6 +275,29 @@ const Analyzer = () => {
                       const plainText = tempDiv.textContent || tempDiv.innerText;
                       navigator.clipboard.writeText(plainText);
                       alert('Resume copied to clipboard!');
+                    }}
+                  >
+                    Copy to Clipboard
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {questions && (
+              <div className="questions-container mt-8">
+                <div 
+                  className="questions-content prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: questions }}
+                />
+                <div className="mt-6 flex justify-end">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      const tempDiv = document.createElement('div');
+                      tempDiv.innerHTML = questions;
+                      const plainText = tempDiv.textContent || tempDiv.innerText;
+                      navigator.clipboard.writeText(plainText);
+                      alert('Questions copied to clipboard!');
                     }}
                   >
                     Copy to Clipboard

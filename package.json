@@ -1,8 +1,12 @@
 {
   "name": "frontend",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "eslint.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,13 +14,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chakra-ui/anatomy": "^2.2.1",
-    "@chakra-ui/react": "^2.8.2",
-    "@chakra-ui/system": "^2.8.2",
-    "@chakra-ui/theme": "^2.8.2",
-    "@chakra-ui/theme-tools": "^2.2.1",
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
     "axios": "^1.6.7",
     "framer-motion": "^10.18.0",
     "react": "^18.2.0",
