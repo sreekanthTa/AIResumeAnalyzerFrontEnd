@@ -120,15 +120,17 @@ const Analyzer = () => {
     setRewrittenResume(null);
 
     try {
-      const formData = new FormData();
-      formData.append('description', description);
-      if (file) {
-        formData.append('resume', file);
-      }
+      // const formData = new FormData();
+      // formData.append('description', description);
+      // if (file) {
+      //   formData.append('resume', file);
+      // }
 
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/questions`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/questions`, {
+        description: description,
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
         }
       });
       
