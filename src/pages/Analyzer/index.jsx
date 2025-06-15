@@ -424,7 +424,8 @@ const handleSend = async (message) => {
               </div>
               <div 
                 className="analysis-result"
-                dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '<br/>') }}
+                dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '') }}
+                // dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '<br/>') }}
               />
             </div>
           )}
@@ -444,7 +445,8 @@ const handleSend = async (message) => {
               </div>
               <div 
                 className="rewritten-content"
-                dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '<br/>') }}
+                dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '') }}
+                // dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '<br/>') }}
               />
             </div>
           )}
@@ -474,7 +476,8 @@ const handleSend = async (message) => {
                 ) : (
                   <div 
                     className="question-container"
-                    dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '<br/>') }}
+                    dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '') }}
+                    // dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '<br/>') }}
                   />
                 )}
               </div>
