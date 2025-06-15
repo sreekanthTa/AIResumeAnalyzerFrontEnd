@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle, FiMessageCircle } from 'react-icons/fi';
 import  "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
 import {
@@ -19,7 +19,7 @@ const Analyzer = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [isGettingQuestions, setIsGettingQuestions] = useState(false);
-  const [activeResult, setActiveResult] = useState(null); // 'analysis', 'rewrite', 'questions', or null
+  const [activeResult, setActiveResult] = useState(null); // 'analysis', 'rewrite', 'questions', 'chat', or null
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [rewrittenResume, setRewrittenResume] = useState(null);
@@ -27,6 +27,7 @@ const Analyzer = () => {
   const [copiedAnalysis, setCopiedAnalysis] = useState(false);
   const [copiedRewrite, setCopiedRewrite] = useState(false);
   const [copiedQuestions, setCopiedQuestions] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false); // New state for chat visibility
   const fileInputRef = useRef(null);
 
   const clearResults = () => {
@@ -35,6 +36,7 @@ const Analyzer = () => {
     setQuestions(null);
     setActiveResult(null);
     setError(null);
+    setIsChatOpen(false); // Also close chat when clearing results
   };
 
   const handleDragOver = (e) => {
@@ -73,7 +75,7 @@ const Analyzer = () => {
     if (!file) return;
 
     setIsAnalyzing(true);
-    clearResults();
+    clearResults(); // Clear all existing results and close chat
 
     try {
       const formData = new FormData();
@@ -102,7 +104,7 @@ const Analyzer = () => {
     if (!file) return;
 
     setIsRewriting(true);
-    clearResults();
+    clearResults(); // Clear all existing results and close chat
 
     try {
       const formData = new FormData();
@@ -134,7 +136,7 @@ const Analyzer = () => {
     }
 
     setIsGettingQuestions(true);
-    clearResults();
+    clearResults(); // Clear all existing results and close chat
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/questions`, {
@@ -169,6 +171,14 @@ const Analyzer = () => {
     }
   };
 
+  const handleChatToggle = () => {
+    clearResults(); // Clear any existing results and activeResult
+    setIsChatOpen(prev => !prev); // Toggle chat visibility
+    if (!isChatOpen) {
+      setActiveResult('chat'); // Set activeResult to chat when opening chat
+    }
+  };
+
   const handleCopy = (text, type) => {
     navigator.clipboard.writeText(text);
     switch(type) {
@@ -190,11 +200,6 @@ const Analyzer = () => {
   const  [messages, setMessages] = React.useState([
     {role:"assistant", content:"Hello my friend"},
   ])
-
-  // const messages = [
-  //   {content:"Hello my friend", sentTime:"just now", sender:"Joe", direction:"incoming"},
-  //   {content:"Hello my friend", sentTime:"just now", sender:"Joe", direction:"outgoing"},
-  // ]
 
 const handleSend = async (message) => {
   console.log("Message sent:", message);
@@ -310,41 +315,11 @@ const handleSend = async (message) => {
           </div>
 
 
-          <MainContainer>
-                  <ChatContainer>
-                    <MessageList>
-                      {
-                        messages?.map((e)=>{
-                          return <Message 
-                          model={{
-                            message: e?.content,
-                            sentTime: "just now",
-                            sender: e?.role === "user" ? "You" : "AI",
-                            direction: e?.role === "user" ? "outgoing" : "incoming"
-
-                          }}/>
-                        })
-                      }
-                      {/* <Message
-                        model={{
-                          message: "Hello my friend",
-                          sentTime: "just now",
-                          sender: "Joe",
-                          direction:"incoming"
-                        }}
-                      /> */}
-                    </MessageList>
-                    <MessageInput placeholder="Type message here"
-                     onSend={handleSend}
-                     />
-                  </ChatContainer>
-                </MainContainer>
-
           <div className="button-grid">
             <button
               className="analyzer-button"
               onClick={handleAnalyze}
-              disabled={!file || isAnalyzing}
+              disabled={!file || isAnalyzing || isChatOpen}
             >
               {isAnalyzing ? (
                 <>
@@ -362,7 +337,7 @@ const handleSend = async (message) => {
             <button
               className="analyzer-button"
               onClick={handleRewrite}
-              disabled={!file || isRewriting}
+              disabled={!file || isRewriting || isChatOpen}
             >
               {isRewriting ? (
                 <>
@@ -380,7 +355,7 @@ const handleSend = async (message) => {
             <button
               className="analyzer-button"
               onClick={handleGetQuestions}
-              disabled={!description || isGettingQuestions}
+              disabled={!description || isGettingQuestions || isChatOpen}
             >
               {isGettingQuestions ? (
                 <>
@@ -394,6 +369,14 @@ const handleSend = async (message) => {
                 </>
               )}
             </button>
+
+            <button
+              className="analyzer-button analyzer-button-secondary"
+              onClick={handleChatToggle}
+            >
+              <FiMessageCircle />
+              {isChatOpen ? 'Close Chat' : 'Open Chat'}
+            </button>
           </div>
 
           {error && (
@@ -403,7 +386,30 @@ const handleSend = async (message) => {
             </div>
           )}
 
-          {activeResult === 'analysis' && result && (
+          {isChatOpen && ( // Conditionally render chat when isChatOpen is true
+            <div style={{ height: "500px" }}>
+              <MainContainer>
+                <ChatContainer>
+                  <MessageList>
+                    {messages?.map((e, index) => (
+                      <Message
+                        key={index}
+                        model={{
+                          message: e?.content,
+                          sentTime: "just now",
+                          sender: e?.role === "user" ? "You" : "AI",
+                          direction: e?.role === "user" ? "outgoing" : "incoming",
+                        }}
+                      />
+                    ))}
+                  </MessageList>
+                  <MessageInput placeholder="Type message here" onSend={handleSend} />
+                </ChatContainer>
+              </MainContainer>
+            </div>
+          )}
+
+          {!isChatOpen && activeResult === 'analysis' && result && (
             <div className="result-container">
               <div className="result-header">
                 <h2>Analysis Results</h2>
@@ -418,13 +424,12 @@ const handleSend = async (message) => {
               </div>
               <div 
                 className="analysis-result"
-                // dangerouslySetInnerHTML={{ __html: result }}
-                dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '') }}
+                dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '<br/>') }}
               />
             </div>
           )}
 
-          {activeResult === 'rewrite' && rewrittenResume && (
+          {!isChatOpen && activeResult === 'rewrite' && rewrittenResume && (
             <div className="result-container">
               <div className="result-header">
                 <h2>Optimized Resume</h2>
@@ -439,12 +444,12 @@ const handleSend = async (message) => {
               </div>
               <div 
                 className="rewritten-content"
-                dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '') }}
+                dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '<br/>') }}
               />
             </div>
           )}
 
-          {activeResult === 'questions' && questions && (
+          {!isChatOpen && activeResult === 'questions' && questions && (
             <div className="result-container">
               <div className="result-header">
                 <h2>Interview Questions</h2>
@@ -457,8 +462,6 @@ const handleSend = async (message) => {
                   {copiedQuestions ? 'Copied!' : 'Copy'}
                 </button>
               </div>
-
-
               <div className="questions-content">
                 {Array.isArray(questions) ? (
                   questions.map((question, index) => (
@@ -471,7 +474,7 @@ const handleSend = async (message) => {
                 ) : (
                   <div 
                     className="question-container"
-                    dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '') }}
+                    dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '<br/>') }}
                   />
                 )}
               </div>

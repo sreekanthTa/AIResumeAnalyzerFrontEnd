@@ -310,10 +310,7 @@ body {
 .analyzer-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-}
-
-.analyzer-button:hover::before {
-  opacity: 1;
+  background: linear-gradient(135deg, var(--brand-primary-dark) 0%, var(--brand-primary) 100%);
 }
 
 .analyzer-button:active {
