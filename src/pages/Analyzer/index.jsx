@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle } from 'react-icons/fi';
 
 const Analyzer = () => {
   const [file, setFile] = useState(null);
@@ -9,11 +10,23 @@ const Analyzer = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [isGettingQuestions, setIsGettingQuestions] = useState(false);
+  const [activeResult, setActiveResult] = useState(null); // 'analysis', 'rewrite', 'questions', or null
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [rewrittenResume, setRewrittenResume] = useState(null);
   const [questions, setQuestions] = useState(null);
+  const [copiedAnalysis, setCopiedAnalysis] = useState(false);
+  const [copiedRewrite, setCopiedRewrite] = useState(false);
+  const [copiedQuestions, setCopiedQuestions] = useState(false);
   const fileInputRef = useRef(null);
+
+  const clearResults = () => {
+    setResult(null);
+    setRewrittenResume(null);
+    setQuestions(null);
+    setActiveResult(null);
+    setError(null);
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -40,7 +53,7 @@ const Analyzer = () => {
   const handleFile = (file) => {
     if (file && file.type === 'application/pdf') {
       setFile(file);
-      setError(null);
+      clearResults();
     } else {
       setError('Please upload a PDF file');
       setFile(null);
@@ -51,10 +64,7 @@ const Analyzer = () => {
     if (!file) return;
 
     setIsAnalyzing(true);
-    setIsRewriting(null);
-    setResult(null);
-    setError(null);
-    setRewrittenResume(null);
+    clearResults();
 
     try {
       const formData = new FormData();
@@ -70,6 +80,7 @@ const Analyzer = () => {
       });
       
       setResult(data?.result);
+      setActiveResult('analysis');
     } catch (err) {
       setError('Failed to analyze resume. Please try again.');
       console.error('Analysis error:', err.response?.data || err.message);
@@ -82,9 +93,7 @@ const Analyzer = () => {
     if (!file) return;
 
     setIsRewriting(true);
-    setIsAnalyzing(null);
-    setError(null);
-    setResult(null);
+    clearResults();
 
     try {
       const formData = new FormData();
@@ -100,6 +109,7 @@ const Analyzer = () => {
       });
       
       setRewrittenResume(data?.rewrittenResume);
+      setActiveResult('rewrite');
     } catch (err) {
       setError('Failed to rewrite resume. Please try again.');
       console.error('Rewrite error:', err.response?.data || err.message);
@@ -115,17 +125,9 @@ const Analyzer = () => {
     }
 
     setIsGettingQuestions(true);
-    setError(null);
-    setResult(null);
-    setRewrittenResume(null);
+    clearResults();
 
     try {
-      // const formData = new FormData();
-      // formData.append('description', description);
-      // if (file) {
-      //   formData.append('resume', file);
-      // }
-
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/questions`, {
         description: description,
       }, {
@@ -148,6 +150,7 @@ const Analyzer = () => {
           throw new Error('Invalid response format from server');
         }
       }
+      setActiveResult('questions');
     } catch (err) {
       console.error('Questions error:', err);
       console.error('Error details:', err.response?.data);
@@ -157,155 +160,206 @@ const Analyzer = () => {
     }
   };
 
-  return (
-    <div className="analyzer">
-      <nav className="nav">
-        <div className="container nav-container">
-          <Link to="/" className="nav-logo">ResumeAnalyzer</Link>
-          <div className="nav-links">
-            <Link to="/" className="text-gray hover:text-primary">Home</Link>
-            <Link to="/analyzer" className="text-gray hover:text-primary">Analyzer</Link>
-          </div>
-        </div>
-      </nav>
+  const handleCopy = (text, type) => {
+    navigator.clipboard.writeText(text);
+    switch(type) {
+      case 'analysis':
+        setCopiedAnalysis(true);
+        setTimeout(() => setCopiedAnalysis(false), 2000);
+        break;
+      case 'rewrite':
+        setCopiedRewrite(true);
+        setTimeout(() => setCopiedRewrite(false), 2000);
+        break;
+      case 'questions':
+        setCopiedQuestions(true);
+        setTimeout(() => setCopiedQuestions(false), 2000);
+        break;
+    }
+  };
 
+  return (
+    <div className="analyzer-page">
       <div className="analyzer-container">
         <div className="analyzer-content">
-          <h1 className="text-center mb-8">Analyze Your Resume</h1>
-          
-          <div className="container">
-            <div className="mb-8">
-              <label htmlFor="description" className="block text-gray-700 font-medium mb-3">
-                Job Description - helps us provide more targeted feedback on how well your resume matches the position
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Paste the job description here to get a targeted analysis..."
-                className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                rows="4"
-              />
-              
-            </div>
-
-            <div className="upload-area" 
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              style={{ borderColor: isDragging ? 'var(--primary)' : 'var(--gray-300)' }}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                accept=".pdf,.doc,.docx"
-                className="hidden"
-              />
-              <div className="text-center">
-                <div className="upload-icon">
-                  <svg className="w-12 h-12 mx-auto text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                </div>
-                <h2 className="font-semibold mt-2">
-                  {file ? file.name : 'Upload your resume'}
-                </h2>
-                <p className="text-gray-600 mt-2">
-                  {file ? 'Click to change file' : 'Drag and drop your resume here or click to browse'}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Supported formats: PDF
-                </p>
-              </div>
-            </div>
-
-            <div className="btns-container">
-              <button
-                className="btn"
-                onClick={handleAnalyze}
-                disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
-              >
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
-              </button>
-              <button
-                className="btn"
-                onClick={handleRewrite}
-                disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
-              >
-                {isRewriting ? 'Rewriting...' : 'Rewrite Resume'}
-              </button>
-              <button
-                className="btn"
-                onClick={handleGetQuestions}
-                disabled={!description || isAnalyzing || isRewriting || isGettingQuestions}
-              >
-                {isGettingQuestions ? 'Getting Questions...' : 'Get Interview Questions'}
-              </button>
-            </div>
-
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
-
-            {result && (
-              <div className="result-container mt-8">
-                <div 
-                  className="analysis-result"
-                  dangerouslySetInnerHTML={{ __html: result }}
-                />
-              </div>
-            )}
-
-            {rewrittenResume && (
-              <div className="rewrite-container mt-8">
-                <div 
-                  className="rewritten-content"
-                  dangerouslySetInnerHTML={{ __html: rewrittenResume }}
-                />
-                <div className="mt-6 flex justify-end">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      const tempDiv = document.createElement('div');
-                      tempDiv.innerHTML = rewrittenResume;
-                      const plainText = tempDiv.textContent || tempDiv.innerText;
-                      navigator.clipboard.writeText(plainText);
-                      alert('Resume copied to clipboard!');
-                    }}
-                  >
-                    Copy to Clipboard
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {questions && (
-              <div className="questions-container mt-8">
-                <div 
-                  className="questions-content prose prose-lg max-w-none"
-                  dangerouslySetInnerHTML={{ __html: questions }}
-                />
-                <div className="mt-6 flex justify-end">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      const tempDiv = document.createElement('div');
-                      tempDiv.innerHTML = questions;
-                      const plainText = tempDiv.textContent || tempDiv.innerText;
-                      navigator.clipboard.writeText(plainText);
-                      alert('Questions copied to clipboard!');
-                    }}
-                  >
-                    Copy to Clipboard
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="analyzer-header">
+            <h1 className="analyzer-title">Resume Analysis & Optimization</h1>
+            <p className="analyzer-subtitle">
+              Upload your resume to get AI-powered analysis, optimization suggestions, and personalized interview questions.
+            </p>
           </div>
+
+          <div className="form-group">
+            <label htmlFor="jobDescription" className="form-label">
+              Job Description (Optional)
+              <span className="form-hint">Add a job description to get more targeted feedback</span>
+            </label>
+            <textarea
+              id="jobDescription"
+              className="job-description-textarea"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Paste the job description here to get tailored analysis and interview questions..."
+              rows={4}
+            />
+          </div>
+
+          <div
+            className={`upload-area ${isDragging ? 'drag-over' : ''}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept=".pdf"
+              className="hidden"
+            />
+            <FiUpload className="upload-icon" />
+            <div className="upload-text">
+              {file ? file.name : 'Drag & drop your resume here'}
+            </div>
+            <p className="upload-hint">Only PDF files are supported</p>
+          </div>
+
+          <div className="button-grid">
+            <button
+              className="analyzer-button"
+              onClick={handleAnalyze}
+              disabled={!file || isAnalyzing}
+            >
+              {isAnalyzing ? (
+                <>
+                  <div className="loading-spinner" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <FiFileText />
+                  Analyze Resume
+                </>
+              )}
+            </button>
+
+            <button
+              className="analyzer-button"
+              onClick={handleRewrite}
+              disabled={!file || isRewriting}
+            >
+              {isRewriting ? (
+                <>
+                  <div className="loading-spinner" />
+                  Rewriting...
+                </>
+              ) : (
+                <>
+                  <FiRefreshCw />
+                  Optimize Resume
+                </>
+              )}
+            </button>
+
+            <button
+              className="analyzer-button"
+              onClick={handleGetQuestions}
+              disabled={!description || isGettingQuestions}
+            >
+              {isGettingQuestions ? (
+                <>
+                  <div className="loading-spinner" />
+                  Generating Questions...
+                </>
+              ) : (
+                <>
+                  <FiMessageSquare />
+                  Get Interview Questions
+                </>
+              )}
+            </button>
+          </div>
+
+          {error && (
+            <div className="error-message">
+              <FiAlertCircle />
+              {error}
+            </div>
+          )}
+
+          {activeResult === 'analysis' && result && (
+            <div className="result-container">
+              <div className="result-header">
+                <h2>Analysis Results</h2>
+                <button
+                  className="copy-button"
+                  onClick={() => handleCopy(result, 'analysis')}
+                  title="Copy to clipboard"
+                >
+                  {copiedAnalysis ? <FiCheck /> : <FiCopy />}
+                  {copiedAnalysis ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+              <div 
+                className="analysis-result"
+                // dangerouslySetInnerHTML={{ __html: result }}
+                dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, '') }}
+              />
+            </div>
+          )}
+
+          {activeResult === 'rewrite' && rewrittenResume && (
+            <div className="result-container">
+              <div className="result-header">
+                <h2>Optimized Resume</h2>
+                <button
+                  className="copy-button"
+                  onClick={() => handleCopy(rewrittenResume, 'rewrite')}
+                  title="Copy to clipboard"
+                >
+                  {copiedRewrite ? <FiCheck /> : <FiCopy />}
+                  {copiedRewrite ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+              <div 
+                className="rewritten-content"
+                dangerouslySetInnerHTML={{ __html: rewrittenResume.replace(/\n/g, '') }}
+              />
+            </div>
+          )}
+
+          {activeResult === 'questions' && questions && (
+            <div className="result-container">
+              <div className="result-header">
+                <h2>Interview Questions</h2>
+                <button
+                  className="copy-button"
+                  onClick={() => handleCopy(Array.isArray(questions) ? questions.join('\n\n') : questions, 'questions')}
+                  title="Copy to clipboard"
+                >
+                  {copiedQuestions ? <FiCheck /> : <FiCopy />}
+                  {copiedQuestions ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+              <div className="questions-content">
+                {Array.isArray(questions) ? (
+                  questions.map((question, index) => (
+                    <div 
+                      key={index} 
+                      className="question-container"
+                      dangerouslySetInnerHTML={{ __html: question.replace(/\n/g, '<br/>') }}
+                    />
+                  ))
+                ) : (
+                  <div 
+                    className="question-container"
+                    dangerouslySetInnerHTML={{ __html: questions.replace(/\n/g, '') }}
+                  />
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
