@@ -218,6 +218,20 @@ a:hover {
   transition: all var(--transition-base);
   cursor: pointer;
   border: none;
+  color: var(--gray-900);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--white);
+  font-size: var(--font-size-base);
+  text-decoration: none;
+  text-align: center;
+  width: fit-content;
+
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
 }
 
 .btn-primary {
@@ -410,11 +424,12 @@ a:hover {
 .upload-area {
   border: 2px dashed var(--gray-300);
   border-radius: var(--radius-xl);
-  padding: var(--space-12);
+  padding: var(--space-3);
   text-align: center;
   transition: all var(--transition-base);
   cursor: pointer;
   background-color: var(--gray-50);
+  margin-top: var(--space-8);
 }
 
 .upload-area:hover {
@@ -455,6 +470,16 @@ a:hover {
   overflow: hidden;
 }
 
+.btns-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+.hidden{
+  visibility: hidden;
+}
 .analyze-button.loading {
   background-color: var(--gray-400);
   cursor: not-allowed;

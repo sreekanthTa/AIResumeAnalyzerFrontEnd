@@ -175,8 +175,8 @@ const Analyzer = () => {
           
           <div className="container">
             <div className="mb-8">
-              <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
-                Job Description (Optional)
+              <label htmlFor="description" className="block text-gray-700 font-medium mb-3">
+                Job Description - helps us provide more targeted feedback on how well your resume matches the position
               </label>
               <textarea
                 id="description"
@@ -186,9 +186,7 @@ const Analyzer = () => {
                 className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                 rows="4"
               />
-              <p className="text-sm text-gray-500 mt-2">
-                Adding a job description helps us provide more targeted feedback on how well your resume matches the position.
-              </p>
+              
             </div>
 
             <div className="upload-area" 
@@ -211,35 +209,35 @@ const Analyzer = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </div>
-                <h2 className="text-xl font-semibold mt-4">
+                <h2 className="font-semibold mt-2">
                   {file ? file.name : 'Upload your resume'}
                 </h2>
                 <p className="text-gray-600 mt-2">
                   {file ? 'Click to change file' : 'Drag and drop your resume here or click to browse'}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  Supported formats: PDF, DOC, DOCX
+                  Supported formats: PDF
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-4">
+            <div className="btns-container">
               <button
-                className="btn btn-primary"
+                className="btn"
                 onClick={handleAnalyze}
                 disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
               >
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
               </button>
               <button
-                className="btn btn-secondary"
+                className="btn"
                 onClick={handleRewrite}
                 disabled={!file || isAnalyzing || isRewriting || isGettingQuestions}
               >
                 {isRewriting ? 'Rewriting...' : 'Rewrite Resume'}
               </button>
               <button
-                className="btn btn-accent"
+                className="btn"
                 onClick={handleGetQuestions}
                 disabled={!description || isAnalyzing || isRewriting || isGettingQuestions}
               >
