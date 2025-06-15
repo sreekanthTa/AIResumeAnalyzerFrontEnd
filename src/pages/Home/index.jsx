@@ -22,14 +22,14 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       {/* Navigation */}
       <nav className="nav">
-        <div className="container nav-container">
+        <div className="nav-container">
           <Link to="/" className="nav-logo">ResumeAnalyzer</Link>
           <div className="nav-links">
-            <Link to="/" className="text-gray hover:text-primary">Home</Link>
-            <Link to="/analyzer" className="text-gray hover:text-primary">Analyzer</Link>
+            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/analyzer" className="nav-link">Analyzer</Link>
             <Link to="/analyzer" className="btn btn-primary">Get Started</Link>
           </div>
         </div>
@@ -41,14 +41,14 @@ const Home = () => {
           <div className="hero-content">
             <span className="badge animate-fade-in">AI-Powered Resume Analysis</span>
             <h1 className="animate-slide-up">Optimize Your Resume with AI</h1>
-            <p className="text-gray max-w-2xl mx-auto animate-slide-up">
+            <p className="text-gray animate-slide-up">
               Get instant feedback on your resume, improve your chances of landing interviews, and stand out from the competition.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 animate-slide-up">
-              <Link to="/analyzer" className="btn btn-primary w-full sm:w-auto">
+            <div className="hero-buttons animate-slide-up">
+              <Link to="/analyzer" className="btn btn-primary">
                 Analyze Your Resume
               </Link>
-              <Link to="/analyzer" className="btn btn-secondary w-full sm:w-auto">
+              <Link to="/analyzer" className="btn btn-secondary">
                 Try Sample
               </Link>
             </div>
@@ -90,7 +90,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="section bg-gray-50">
+      <section className="section">
         <div className="container">
           <div className="section-title animate-fade-in">
             <span className="badge">Why Choose Us</span>
@@ -143,10 +143,10 @@ const Home = () => {
       {/* CTA Section */}
       <section className="section">
         <div className="container">
-          <div className="max-w-2xl mx-auto text-center bg-white p-8 rounded-lg shadow-md border border-gray-200 animate-fade-in">
+          <div className="cta-card animate-fade-in">
             <span className="badge">Get Started</span>
-            <h2 className="mt-4">Ready to Optimize Your Resume?</h2>
-            <p className="text-gray mb-8">
+            <h2>Ready to Optimize Your Resume?</h2>
+            <p className="text-gray">
               Start analyzing your resume now and get personalized feedback to improve your chances of landing your dream job.
             </p>
             <Link to="/analyzer" className="btn btn-primary">
@@ -161,13 +161,13 @@ const Home = () => {
         <div className="container">
           <div className="footer-grid">
             <div>
-              <h4 className="text-2xl font-bold text-primary mb-4">ResumeAnalyzer</h4>
+              <h4 className="footer-title">ResumeAnalyzer</h4>
               <p className="text-gray">
                 AI-powered resume analysis and optimization platform.
               </p>
             </div>
             <div>
-              <h5 className="text-lg font-semibold mb-4">Product</h5>
+              <h5 className="footer-heading">Product</h5>
               <ul className="footer-links">
                 <li><Link to="#">Features</Link></li>
                 <li><Link to="#">Pricing</Link></li>
@@ -175,7 +175,7 @@ const Home = () => {
               </ul>
             </div>
             <div>
-              <h5 className="text-lg font-semibold mb-4">Company</h5>
+              <h5 className="footer-heading">Company</h5>
               <ul className="footer-links">
                 <li><Link to="#">About</Link></li>
                 <li><Link to="#">Blog</Link></li>
@@ -183,7 +183,7 @@ const Home = () => {
               </ul>
             </div>
             <div>
-              <h5 className="text-lg font-semibold mb-4">Legal</h5>
+              <h5 className="footer-heading">Legal</h5>
               <ul className="footer-links">
                 <li><Link to="#">Privacy</Link></li>
                 <li><Link to="#">Terms</Link></li>
@@ -191,7 +191,7 @@ const Home = () => {
               </ul>
             </div>
           </div>
-          <div className="text-center text-gray mt-12 pt-8 border-t border-gray-200">
+          <div className="footer-copyright">
             © {new Date().getFullYear()} ResumeAnalyzer. All rights reserved.
           </div>
         </div>
