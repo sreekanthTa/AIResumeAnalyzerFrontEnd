@@ -2,6 +2,15 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import  "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+} from "@chatscope/chat-ui-kit-react";
 
 const Analyzer = () => {
   const [file, setFile] = useState(null);
@@ -178,6 +187,81 @@ const Analyzer = () => {
     }
   };
 
+  const  [messages, setMessages] = React.useState([
+    {role:"assistant", content:"Hello my friend"},
+  ])
+
+  // const messages = [
+  //   {content:"Hello my friend", sentTime:"just now", sender:"Joe", direction:"incoming"},
+  //   {content:"Hello my friend", sentTime:"just now", sender:"Joe", direction:"outgoing"},
+  // ]
+
+const handleSend = async (message) => {
+  console.log("Message sent:", message);
+
+  const newMessage = { role: "user", content: message };
+  const updatedMessages = [...messages, newMessage];
+  setMessages(updatedMessages);
+
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/resume/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: updatedMessages,
+        description: description || "test",
+      }),
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+
+    let fullResponse = "";
+    const botMessage = { role: "assistant", content: "" };
+    setMessages((prev) => [...prev, botMessage]); // Initial empty assistant message
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+    console.log("repoasd",chunk)
+
+      const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+
+      for (const line of lines) {
+        if (line.startsWith("data:")) {
+          const token = line.replace("data: ", "").trim();
+          if (token === "[DONE]") break;
+
+          if(token?.startsWith("'")){
+            fullResponse += token ;
+
+          }else{
+            fullResponse += " " + token  ;
+
+          }
+
+          // Update the last assistant message with streamed content
+          setMessages((prevMessages) => {
+            const updated = [...prevMessages];
+            const last = updated[updated.length - 1];
+            if (last.role === "assistant") {
+              last.content = fullResponse;
+            }
+            return [...updated];
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error streaming response:", error);
+    alert("Failed to get response from server");
+  }
+};
+
+
+
   return (
     <div className="analyzer-page">
       <div className="analyzer-container">
@@ -224,6 +308,37 @@ const Analyzer = () => {
             </div>
             <p className="upload-hint">Only PDF files are supported</p>
           </div>
+
+
+          <MainContainer>
+                  <ChatContainer>
+                    <MessageList>
+                      {
+                        messages?.map((e)=>{
+                          return <Message 
+                          model={{
+                            message: e?.content,
+                            sentTime: "just now",
+                            sender: e?.role === "user" ? "You" : "AI",
+                            direction: e?.role === "user" ? "outgoing" : "incoming"
+
+                          }}/>
+                        })
+                      }
+                      {/* <Message
+                        model={{
+                          message: "Hello my friend",
+                          sentTime: "just now",
+                          sender: "Joe",
+                          direction:"incoming"
+                        }}
+                      /> */}
+                    </MessageList>
+                    <MessageInput placeholder="Type message here"
+                     onSend={handleSend}
+                     />
+                  </ChatContainer>
+                </MainContainer>
 
           <div className="button-grid">
             <button
@@ -342,6 +457,8 @@ const Analyzer = () => {
                   {copiedQuestions ? 'Copied!' : 'Copy'}
                 </button>
               </div>
+
+
               <div className="questions-content">
                 {Array.isArray(questions) ? (
                   questions.map((question, index) => (
