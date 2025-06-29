@@ -56,3 +56,10 @@ export const getInterviewQuestions = (description) => {
 export const chatWithAI = (messages, description) => {
   return apiClient.post('/api/resume/chat', { messages, description });
 };
+
+
+
+// Coding Editor APIs
+export const getQuestionByIdApi = (questionId) => {
+  return apiClient.get(`/api/questions/${questionId}`);
+}

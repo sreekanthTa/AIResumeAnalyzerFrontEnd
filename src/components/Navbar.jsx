@@ -35,6 +35,9 @@ const Navbar = () => {
         <li className="navbar-item">
           <Link to="/analyzer">Analyzer</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/coding-editor">Coding Editor</Link>
+        </li>
         {!accessToken ? <>
         <li className="navbar-item">
           <Link to="/signin">Signin</Link>
