@@ -32,26 +32,28 @@ const Navbar = () => {
         <li className="navbar-item">
           <Link to="/">Home</Link>
         </li>
-        <li className="navbar-item">
-          <Link to="/analyzer">Analyzer</Link>
-        </li>
-        <li className="navbar-item">
-          <Link to="/coding">Coding</Link>
-        </li>
-        <li className="navbar-item">
-          <Link to="/questions">Questions</Link>
-        </li>
-        {!accessToken ? <>
+        {!accessToken && <>
         <li className="navbar-item">
           <Link to="/signin">Signin</Link>
         </li>
         <li className="navbar-item">
           <Link to="/signup">Signup</Link>
         </li>
-        </> : 
+        </>}
+        {accessToken && <>
+        <li className="navbar-item">
+          <Link to="/questions">Questions</Link>
+        </li>
+        <li className="navbar-item">
+          <Link to="/coding">Coding</Link>
+        </li>
+        <li className="navbar-item">
+          <Link to="/analyzer">Analyzer</Link>
+        </li>
         <li className="navbar-item" onClick={handleLogout}>
         <Link to="/">Logout</Link>
-      </li>}
+      </li>
+      </>}
       </ul>
     </nav>
   );
