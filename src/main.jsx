@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import axios from 'axios';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from './store';
 import { refreshToken } from './api';
 import { setAccessToken } from './store/authSlice';
@@ -61,6 +61,10 @@ axios.interceptors.response.use(
 // Refresh token on page load
 const refreshAccessToken = async () => {
   try {
+    if(accessToken) {
+      console.log('Access token already available:', accessToken);
+      return; // No need to refresh if we already have a token
+    }
     const response = await refreshToken();
     const newAccessToken = response.data.accessToken;
     accessToken = newAccessToken; // Update the global variable
@@ -73,7 +77,7 @@ const refreshAccessToken = async () => {
   }
 };
 
-refreshAccessToken();
+// refreshAccessToken();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -5,7 +5,7 @@ import { setAccessToken } from '../../store/authSlice';
 import './Signin.css'; // Import the CSS file for styling
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-import { signin } from '../../api';
+import { signin, logout } from '../../api';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +30,23 @@ const Signin = () => {
       console.error('Error during login:', error);
       alert('Failed to sign in. Please check your credentials and try again.');
       // Handle error (e.g., show an error message)
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Call the logout API
+
+      // Clear the access token from memory and Redux
+      accessToken = null;
+      dispatch(setAccessToken(null));
+
+      console.log('Logout successful');
+      // Redirect to the signin page
+      navigate('/signin');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('Failed to logout. Please try again.');
     }
   };
 

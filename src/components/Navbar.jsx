@@ -16,14 +16,12 @@ const Navbar = () => {
             // Logic to handle logout, e.g., clearing the access token
             dispatch(clearAccessToken({}));
             // Optionally redirect to home or login page
-            window.location.href = '/'; // Redirect to home page after logout
+            // window.location.href = '/'; // Redirect to home page after logout
         } catch (error) {
             console.error('Logout failed:', error);
             // Handle logout error (e.g., show an error message)
         }
-        // Logic to handle logout, e.g., clearing the access token
-        dispatch(clearAccessToken({}));
-        // Optionally redirect to home or login page
+     
 
 
     }  
