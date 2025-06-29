@@ -30,6 +30,8 @@ const Home = () => {
           <div className="nav-links">
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/analyzer" className="nav-link">Analyzer</Link>
+            <Link to="/signup" className="nav-link">Signup</Link>
+            <Link to="/signin" className="nav-link">Signin</Link>
             <Link to="/analyzer" className="btn btn-primary">Get Started</Link>
           </div>
         </div>
@@ -200,4 +202,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;

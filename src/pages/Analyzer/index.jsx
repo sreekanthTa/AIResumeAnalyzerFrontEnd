@@ -483,10 +483,15 @@ const handleSend = async (message) => {
               </div>
             </div>
           )}
+
+          <div className="auth-links">
+            <Link to="/signup" className="auth-link">Signup</Link>
+            <Link to="/signin" className="auth-link">Signin</Link>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Analyzer; 
+export default Analyzer;
