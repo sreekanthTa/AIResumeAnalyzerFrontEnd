@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
@@ -40,6 +40,7 @@ axios.interceptors.response.use(
 
         // Retry the original request with the new token
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+        store.dispatch(setAccessToken(accessToken))
         return axios(originalRequest);
       } catch (refreshError) {
         console.error('Error refreshing token:', refreshError);
@@ -58,26 +59,6 @@ axios.interceptors.response.use(
   }
 );
 
-// Refresh token on page load
-const refreshAccessToken = async () => {
-  try {
-    if(accessToken) {
-      console.log('Access token already available:', accessToken);
-      return; // No need to refresh if we already have a token
-    }
-    const response = await refreshToken();
-    const newAccessToken = response.data.accessToken;
-    accessToken = newAccessToken; // Update the global variable
-    store.dispatch(setAccessToken(newAccessToken));
-    console.log('Access token refreshed:', newAccessToken);
-  } catch (error) {
-    console.error('Failed to refresh access token:', error);
-    // Optionally, redirect to login if refresh fails
-    window.location.href = '/signin'; // Redirect to signin page
-  }
-};
-
-// refreshAccessToken();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

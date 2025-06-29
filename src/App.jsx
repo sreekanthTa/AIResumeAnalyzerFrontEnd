@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Analyzer from './pages/Analyzer';
 import Signin from './pages/Signin';
-import Signup from './pages/Signup';
 
 const App = () => {
+
+ 
+  
+
   return (
     <Router>
       <Routes>
