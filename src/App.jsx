@@ -6,6 +6,7 @@ import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import CodingEditorPage from './pages/CodingEditorPage';
 import QuestionsPage from './pages/QuestionsPage';
+import CodingPage from './pages/CodingPage';
 
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/questions" element={<QuestionsPage />} />
+        <Route path="/coding" element={<CodingPage />} />
         <Route path="/coding-editor/:id" element={<CodingEditorPage />} />
       </Routes>
     </Router>

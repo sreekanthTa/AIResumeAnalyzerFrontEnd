@@ -1,0 +1,65 @@
+/* Enhance styling for CodingPage */
+.coding-page {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #f0f4f8; /* Slightly lighter background for better contrast */
+}
+
+.coding-heading {
+  text-align: center;
+  font-size: 2.5rem; /* Increased font size for better visibility */
+  font-weight: bold;
+  margin-bottom: 1.5rem; /* Increased margin for spacing */
+  color: #222; /* Darker color for better readability */
+}
+
+.execute {
+  margin: 0 auto;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #4f46e5; /* Adjusted color for better aesthetics */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px; /* Slightly rounded corners */
+  cursor: pointer;
+  font-size: 1.1rem; /* Slightly larger font size */
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform transition */
+}
+
+.execute:hover {
+  background-color: #4338ca; /* Darker hover color */
+  transform: scale(1.05); /* Slight scaling effect on hover */
+}
+
+.coding-left {
+  flex: 2;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for depth */
+  padding: 1.5rem; /* Increased padding for better spacing */
+}
+
+.coding-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for depth */
+  padding: 1.5rem; /* Increased padding for better spacing */
+}
+
+.coding-right div {
+  height: 80dvh; /* Set a fixed height for logs */
+  overflow-y: auto; /* Enable scrolling if logs exceed height */
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 0.75rem; /* Increased padding for better spacing */
+  background-color: #f0f4f8; /* Slightly lighter background for better contrast */
+}

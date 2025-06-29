@@ -36,7 +36,7 @@ const Navbar = () => {
           <Link to="/analyzer">Analyzer</Link>
         </li>
         <li className="navbar-item">
-          <Link to="/coding-editor">Coding Editor</Link>
+          <Link to="/coding">Coding</Link>
         </li>
         <li className="navbar-item">
           <Link to="/questions">Questions</Link>

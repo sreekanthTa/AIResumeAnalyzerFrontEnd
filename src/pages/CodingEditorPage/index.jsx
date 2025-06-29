@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import CodingEditor from '../../components/CodingEditor';
 import './CodingEditorPage.css';
 import { getQuestionById } from '../../api'; // Adjust the import path as necessary
+import { CodingEditor } from '../../components/CodingEditor/CodingEditor';
 
 const CodingEditorPage = () => {
   const { id } = useParams();
@@ -62,10 +62,12 @@ const CodingEditorPage = () => {
         </table>
       </div>
       <div className="editor-container">
-        <CodingEditor 
-        starterCode={problem.starter_code} 
-        testCases={testCases}
+        <CodingEditor
         />
+        {/* <CodingEditor 
+         starterCode={problem.starter_code} 
+         testCases={testCases}
+        /> */}
       </div>
     </div>
   );
