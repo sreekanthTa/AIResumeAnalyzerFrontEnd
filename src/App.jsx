@@ -5,6 +5,7 @@ import Analyzer from './pages/Analyzer';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import CodingEditorPage from './pages/CodingEditorPage';
+import QuestionsPage from './pages/QuestionsPage';
 
 const App = () => {
 
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/analyzer" element={<Analyzer />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/questions" element={<QuestionsPage />} />
         <Route path="/coding-editor/:id" element={<CodingEditorPage />} />
       </Routes>
     </Router>

@@ -38,6 +38,9 @@ const Navbar = () => {
         <li className="navbar-item">
           <Link to="/coding-editor">Coding Editor</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/questions">Questions</Link>
+        </li>
         {!accessToken ? <>
         <li className="navbar-item">
           <Link to="/signin">Signin</Link>

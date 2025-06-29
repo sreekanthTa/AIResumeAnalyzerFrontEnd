@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import './CodingEditor.css';
 
-const CodingEditor = () => {
-  const [code, setCode] = useState('// Write your JavaScript code here');
+const CodingEditor = ({ starterCode, testCases }) => {
+  const [code, setCode] = useState(starterCode || '// Write your JavaScript code here');
   const [logs, setLogs] = useState([]);
   const [questions] = useState([
     {
@@ -15,32 +15,19 @@ const CodingEditor = () => {
       answer: 'Event delegation is a technique where a single event listener is added to a parent element to handle events for its child elements.',
     },
   ]);
-  const [defaultTestCases] = useState([
-    {
-      input: [1, 2, 3, 4, 5],
-      expectedOutput: [1, 2, 3, 4, 5],
-    },
-    {
-      input: [10, 15, 20, 25],
-      expectedOutput: [10, 15, 20, 25],
-    },
-  ]);
-
-  const handleEditorChange = (value) => {
-    setCode(value);
-  };
+ 
 
   const handleExecute = () => {
     try {
-      const userFunction = new Function('input', code);
+      const userFunction = new Function('nums', 'target', code);
       const logCollector = [];
-    
 
-      const testResults = defaultTestCases.map((testCase) => {
-        const result = userFunction(testCase.input);
-        const passed = result === testCase.expectedOutput;
+      const testResults = testCases.map((testCase) => {
+        const [nums, target] = testCase.input.match(/\d+/g).map(Number);
+        const result = userFunction(nums, target);
+        const passed = JSON.stringify(result) === testCase.expectedOutput;
         logCollector.push(
-          `${passed ? '✅' : '❌'} Input: ${JSON.stringify(testCase.input)}, Expected: ${testCase.expectedOutput}, Actual: ${result}, `
+          `Test Case: Input: ${testCase.input}, Expected: ${testCase.expectedOutput}, Actual: ${JSON.stringify(result)}, Passed: ${passed ? '✅' : '❌'}`
         );
         return passed;
       });
@@ -64,13 +51,13 @@ const CodingEditor = () => {
         <Editor
           height="70vh"
           defaultLanguage="javascript"
-          defaultValue={code}
-          onChange={handleEditorChange}
+          value={starterCode} // Starter code is passed and not editable
           theme='vs-dark'
           options={{
+            // readOnly: true, // Make the editor read-only
             fontSize: 16,
             fontFamily: 'Fira Code, monospace',
-            wordWrap: "on",
+            wordWrap: 'on',
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             automaticLayout: true,

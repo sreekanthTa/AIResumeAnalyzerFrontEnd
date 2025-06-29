@@ -60,6 +60,14 @@ export const chatWithAI = (messages, description) => {
 
 
 // Coding Editor APIs
-export const getQuestionByIdApi = (questionId) => {
+export const getAllQuestions = (limit, offset) => {
+  return apiClient.get(`/api/questions`, {
+    params: {
+      limit: parseInt(limit, 10),
+      offset: parseInt(offset, 10),
+    },
+  });
+};
+export const getQuestionById = (questionId) => {
   return apiClient.get(`/api/questions/${questionId}`);
 }
