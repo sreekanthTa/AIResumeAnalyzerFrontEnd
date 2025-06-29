@@ -63,6 +63,7 @@ const refreshAccessToken = async () => {
   } catch (error) {
     console.error('Failed to refresh access token:', error);
     // Optionally, redirect to login if refresh fails
+    window.location.href = '/signin'; // Redirect to signin page
   }
 };
 
