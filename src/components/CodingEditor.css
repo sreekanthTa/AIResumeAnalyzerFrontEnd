@@ -45,3 +45,26 @@
     color: white;
     border: none;
 }
+
+.logs-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.logs-container h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.logs-container p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0.25rem 0;
+  word-wrap: break-word;
+}

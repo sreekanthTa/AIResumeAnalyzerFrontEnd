@@ -16,34 +16,36 @@ const CodingEditor = ({ starterCode, testCases }) => {
     },
   ]);
  
-
   const handleExecute = () => {
+    const logCollector = [];
+    const originalConsoleLog = console.log;
+  
     try {
-      const userFunction = new Function('nums', 'target', code);
-      const logCollector = [];
-
-      const testResults = testCases.map((testCase) => {
-        const [nums, target] = testCase.input.match(/\d+/g).map(Number);
-        const result = userFunction(nums, target);
-        const passed = JSON.stringify(result) === testCase.expectedOutput;
+      // Override console.log to capture output for UI only
+      console.log = (...args) => {
         logCollector.push(
-          `Test Case: Input: ${testCase.input}, Expected: ${testCase.expectedOutput}, Actual: ${JSON.stringify(result)}, Passed: ${passed ? '✅' : '❌'}`
+          args.map(arg =>
+            typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+          ).join(' ')
         );
-        return passed;
-      });
-
-      setLogs(logCollector);
-
-      if (testResults.every((passed) => passed)) {
-        alert('All test cases passed successfully!');
-      } else {
-        alert('Some test cases failed. Check the logs for details.');
+        // Do NOT print to real console
+      };
+  
+      const userFunction = new Function(code);
+      const result = userFunction();
+  
+      if (result !== undefined) {
+        logCollector.push(`Return: ${result}`);
       }
+  
+      setLogs(logCollector);
     } catch (error) {
-      setLogs([`Error: ${error.message}`]);
-      alert('Error executing code: ' + error.message);
+      setLogs([`❌ Error: ${error.message}`]);
+    } finally {
+      console.log = originalConsoleLog; // Restore the original console
     }
   };
+  
 
   return (
     <div className="coding-editor">
@@ -51,8 +53,9 @@ const CodingEditor = ({ starterCode, testCases }) => {
         <Editor
           height="70vh"
           defaultLanguage="javascript"
-          value={starterCode} // Starter code is passed and not editable
-          theme='vs-dark'
+          value={code} // Bind the editor value to the `code` state
+          onChange={(newValue) => setCode(newValue)} // Update the `code` state on change
+          theme="vs-dark"
           options={{
             // readOnly: true, // Make the editor read-only
             fontSize: 16,
