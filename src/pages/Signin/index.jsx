@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setAccessToken } from '../../store/authSlice';
 import './Signin.css'; // Import the CSS file for styling
+import { useNavigate } from 'react-router-dom';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -18,6 +23,11 @@ const Signin = () => {
       });
 
       console.log('Login successful:', response.data);
+      // Dispatch the action to store the access token in Redux
+      dispatch(setAccessToken(response.data.accessToken));
+      if(response.data){
+        navigate('/'); // Redirect to the analyzer page after successful login
+      }
       // Handle successful login (e.g., redirect or show a success message)
     } catch (error) {
       console.error('Error during login:', error);

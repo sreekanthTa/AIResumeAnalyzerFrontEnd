@@ -3,9 +3,20 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import axios from 'axios';
+import { Provider } from 'react-redux';
+import store from './store';
 
-// Configure Axios to include cookies in all requests
-axios.defaults.withCredentials = true;
+// Global variable to store the access token in memory
+let accessToken = null;
+
+// Add Axios interceptor for token management
+axios.interceptors.request.use((config) => {
+  // Attach the access token to the Authorization header if available
+  if (accessToken) {
+    config.headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
 // Add Axios interceptor for token refresh
 axios.interceptors.response.use(
@@ -18,16 +29,15 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // Call the refresh token endpoint
-        const refreshResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/refresh-token`, {}, {
+        const refreshResponse = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh`, {}, {
           withCredentials: true, // Ensure cookies are sent
         });
 
-        // Update Axios headers with the new access token
-        const newToken = refreshResponse.data.token;
-        axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        // Update the access token in memory
+        accessToken = refreshResponse.data.accessToken;
 
         // Retry the original request with the new token
-        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         return axios(originalRequest);
       } catch (refreshError) {
         console.error('Error refreshing token:', refreshError);
@@ -42,6 +52,8 @@ axios.interceptors.response.use(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

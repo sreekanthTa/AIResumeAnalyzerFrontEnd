@@ -16,12 +16,15 @@
   "dependencies": {
     "@chatscope/chat-ui-kit-react": "^2.1.1",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.6.7",
     "framer-motion": "^10.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
-    "react-router-dom": "^6.21.3"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.21.3",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
