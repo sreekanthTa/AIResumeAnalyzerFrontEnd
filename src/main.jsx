@@ -44,7 +44,13 @@ axios.interceptors.response.use(
       } catch (refreshError) {
         console.error('Error refreshing token:', refreshError);
         // Handle refresh token failure (e.g., redirect to login)
+        // Optionally, you can dispatch an action to clear the access token in Redux
+        store.dispatch(setAccessToken(null)); // Clear access token in Redux store
+        // Redirect to login page
+        window.location.href = '/signin'; // Redirect to signin page
+        // Return a rejected promise to propagate the error 
         return Promise.reject(refreshError);
+
       }
     }
 
