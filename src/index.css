@@ -114,6 +114,40 @@ body {
   --transition-opacity: opacity 0.3s ease;
 }
 
+/* Define best font sizes for the entire project */
+:root {
+  --font-size-xs: 0.75rem; /* Extra small */
+  --font-size-sm: 0.875rem; /* Small */
+  --font-size-base: 1rem; /* Base */
+  --font-size-lg: 1.125rem; /* Large */
+  --font-size-xl: 1.25rem; /* Extra large */
+  --font-size-2xl: 1.5rem; /* 2x large */
+  --font-size-3xl: 1.875rem; /* 3x large */
+  --font-size-4xl: 2.25rem; /* 4x large */
+  --font-size-5xl: 3rem; /* 5x large */
+}
+
+/* Apply font sizes globally */
+body {
+  font-size: var(--font-size-base);
+}
+
+h1 {
+  font-size: var(--font-size-3xl);
+}
+
+h2 {
+  font-size: var(--font-size-2xl);
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+}
+
+p, span, a {
+  font-size: var(--font-size-base);
+}
+
 /* Layout */
 .analyzer-page {
   min-height: 100vh;
@@ -860,4 +894,4 @@ body {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-} 
+}

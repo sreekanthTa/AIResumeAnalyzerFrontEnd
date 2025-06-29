@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../../components/Navbar';
 
 const Home = () => {
   useEffect(() => {
@@ -23,19 +24,7 @@ const Home = () => {
 
   return (
     <div>
-      {/* Navigation */}
-      <nav className="nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo">ResumeAnalyzer</Link>
-          <div className="nav-links">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/analyzer" className="nav-link">Analyzer</Link>
-            <Link to="/signup" className="nav-link">Signup</Link>
-            <Link to="/signin" className="nav-link">Signin</Link>
-            <Link to="/analyzer" className="btn btn-primary">Get Started</Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="hero">

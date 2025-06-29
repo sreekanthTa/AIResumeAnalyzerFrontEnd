@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle, FiMessageCircle } from 'react-icons/fi';
 import  "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import Navbar from '../../components/Navbar';
+import { analyzeResume, rewriteResume, getInterviewQuestions, chatWithAI } from '../../api';
 
 import {
   MainContainer,
@@ -84,11 +86,7 @@ const Analyzer = () => {
         formData.append('description', description);
       }
 
-      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/analyze`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const { data } = await analyzeResume(formData);
       
       setResult(data?.result);
       setActiveResult('analysis');
@@ -113,11 +111,7 @@ const Analyzer = () => {
         formData.append('description', description);
       }
 
-      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/rewrite`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const { data } = await rewriteResume(formData);
       
       setRewrittenResume(data?.rewrittenResume);
       setActiveResult('rewrite');
@@ -139,15 +133,7 @@ const Analyzer = () => {
     clearResults(); // Clear all existing results and close chat
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resume/questions`, {
-        description: description,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('Questions Response:', response.data);
+      const response = await getInterviewQuestions(description);
       const responseData = response.data;
 
       if (typeof responseData === 'string') {
@@ -164,7 +150,6 @@ const Analyzer = () => {
       setActiveResult('questions');
     } catch (err) {
       console.error('Questions error:', err);
-      console.error('Error details:', err.response?.data);
       setError('Failed to get questions. Please try again.');
     } finally {
       setIsGettingQuestions(false);
@@ -202,22 +187,14 @@ const Analyzer = () => {
   ])
 
 const handleSend = async (message) => {
-  console.log("Message sent:", message);
+  console.log('Message sent:', message);
 
   const newMessage = { role: "user", content: message };
   const updatedMessages = [...messages, newMessage];
   setMessages(updatedMessages);
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/resume/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: updatedMessages,
-        description: description || "test",
-      }),
-    });
-
+    const response = await chatWithAI(updatedMessages, description || "test");
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
 
@@ -269,6 +246,7 @@ const handleSend = async (message) => {
 
   return (
     <div className="analyzer-page">
+      <Navbar />
       <div className="analyzer-container">
         <div className="analyzer-content">
           <div className="analyzer-header">

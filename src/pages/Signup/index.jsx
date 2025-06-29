@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Signup.css'; // Import the CSS file for styling
-import axios from 'axios';
+import { signup } from '../../api';
+import Navbar from '../../components/Navbar';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -10,65 +11,63 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
-        name,
-        email,
-        password,
-      });
-
+      const response = await signup(name, email, password);
       console.log('Signup successful:', response.data);
-      // Handle successful signup (e.g., redirect or show a success message)
+      alert('Account created successfully! You can now sign in.');
     } catch (error) {
       console.error('Error during signup:', error);
-      // Handle error (e.g., show an error message)
+      alert('Failed to sign up. Please try again later.');
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1 className="auth-title">Create Account</h1>
-        <form onSubmit={handleSignup} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="name" className="form-label">Name:</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="form-input"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">Email:</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="form-input"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">Password:</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="form-input"
-            />
-          </div>
-          <button type="submit" className="auth-button">Signup</button>
-        </form>
-        <p className="auth-footer">
-          Already have an account? <a href="/signin" className="auth-link">Login here</a>
-        </p>
+    <>
+      <Navbar />
+      <div className="auth-page">
+        <div className="auth-container">
+          <h1 className="auth-title">Create Account</h1>
+          <form onSubmit={handleSignup} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="name" className="form-label">Name:</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email" className="form-label">Email:</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">Password:</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="form-input"
+              />
+            </div>
+            <button type="submit" className="auth-button">Signup</button>
+          </form>
+          <p className="auth-footer">
+            Already have an account? <a href="/signin" className="auth-link">Login here</a>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

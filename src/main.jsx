@@ -5,6 +5,8 @@ import './index.css';
 import axios from 'axios';
 import { Provider } from 'react-redux';
 import store from './store';
+import { refreshToken } from './api';
+import { setAccessToken } from './store/authSlice';
 
 // Global variable to store the access token in memory
 let accessToken = null;
@@ -49,6 +51,22 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Refresh token on page load
+const refreshAccessToken = async () => {
+  try {
+    const response = await refreshToken();
+    const newAccessToken = response.data.accessToken;
+    accessToken = newAccessToken; // Update the global variable
+    store.dispatch(setAccessToken(newAccessToken));
+    console.log('Access token refreshed:', newAccessToken);
+  } catch (error) {
+    console.error('Failed to refresh access token:', error);
+    // Optionally, redirect to login if refresh fails
+  }
+};
+
+refreshAccessToken();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
