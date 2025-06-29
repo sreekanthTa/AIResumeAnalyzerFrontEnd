@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setAccessToken } from '../../store/authSlice';
 import './Signin.css'; // Import the CSS file for styling
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/NavBar/Navbar';
 import { signin, logout } from '../../api';
 
 const Signin = () => {

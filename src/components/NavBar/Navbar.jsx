@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAccessToken } from '../store/authSlice';
-import { logout } from '../api';
+import { clearAccessToken } from '../../store/authSlice';
+import { logout } from '../../api';
 
 const Navbar = () => {
     const {accessToken} = useSelector((state) => state.auth);

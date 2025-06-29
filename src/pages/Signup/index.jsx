@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Signup.css'; // Import the CSS file for styling
 import { signup } from '../../api';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/NavBar/Navbar';
 
 const Signup = () => {
   const [email, setEmail] = useState('');

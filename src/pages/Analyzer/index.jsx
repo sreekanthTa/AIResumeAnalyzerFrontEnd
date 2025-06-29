@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { FiUpload, FiFileText, FiRefreshCw, FiMessageSquare, FiCopy, FiCheck, FiAlertCircle, FiMessageCircle } from 'react-icons/fi';
 import  "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/NavBar/Navbar';
 import { analyzeResume, rewriteResume, getInterviewQuestions, chatWithAI } from '../../api';
 
 import {
