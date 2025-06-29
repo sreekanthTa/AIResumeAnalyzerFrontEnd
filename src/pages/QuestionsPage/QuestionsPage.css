@@ -66,20 +66,54 @@
   color: #ef4444;
 }
 
-.view-button {
+/* Minimalistic design for buttons */
+button {
   padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 0.875rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  background-color: #ffffff;
+  color: #374151;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-right: 0.5rem; /* Adds space between buttons */
+}
+
+button:hover {
+  background-color: #f3f4f6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:last-child {
+  margin-right: 0; /* Removes margin for the last button */
+}
+
+.view-button {
+  border-color: #2563eb;
+  color: #2563eb;
 }
 
 .view-button:hover {
-  background-color: #1d4ed8;
+  background-color: #e0f2fe;
+}
+
+.code-button {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.code-button:hover {
+  background-color: #d1fae5;
+}
+
+.problem-button {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.problem-button:hover {
+  background-color: #fef3c7;
 }
 
 .solution-container {
@@ -88,6 +122,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .solution-container h1 {
@@ -95,6 +132,32 @@
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 1rem;
+}
+
+.problem-description {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.sample-input,
+.sample-output {
+  background-color: #e8f0fe;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-bottom: 1rem;
+  border: 1px solid #d0d7de;
+}
+
+.sample-input {
+  color: #0d6efd;
+}
+
+.sample-output {
+  color: #198754;
 }
 
 .solution-code {
