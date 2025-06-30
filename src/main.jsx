@@ -8,17 +8,17 @@ import store from './store';
 import { refreshToken } from './api';
 import { setAccessToken } from './store/authSlice';
 
-// Global variable to store the access token in memory
-let accessToken = null;
+// // Global variable to store the access token in memory
+// let accessToken = null;
 
-// Add Axios interceptor for token management
-axios.interceptors.request.use((config) => {
-  // Attach the access token to the Authorization header if available
-  if (accessToken) {
-    config.headers['Authorization'] = `Bearer ${accessToken}`;
-  }
-  return config;
-});
+// // Add Axios interceptor for token management
+// axios.interceptors.request.use((config) => {
+//   // Attach the access token to the Authorization header if available
+//   if (accessToken) {
+//     config.headers['Authorization'] = `Bearer ${accessToken}`;
+//   }
+//   return config;
+// });
 
 // Add Axios interceptor for token refresh
 axios.interceptors.response.use(
@@ -36,7 +36,7 @@ axios.interceptors.response.use(
         });
 
         // Update the access token in memory
-        accessToken = refreshResponse.data.accessToken;
+        const accessToken = refreshResponse.data.accessToken;
 
         // Retry the original request with the new token
         originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -67,3 +67,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </Provider>
   </React.StrictMode>
 );
+

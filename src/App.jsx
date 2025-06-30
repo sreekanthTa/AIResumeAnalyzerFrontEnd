@@ -1,15 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
-import PrivateRoute from './components/PrivateRoute';
 import CodingEditorPage from './pages/CodingEditorPage';
 import QuestionsPage from './pages/QuestionsPage';
 import CodingPage from './pages/CodingPage';
 import Analyzer from './pages/Analyzer';
+import PrivateRoute from './utils/PrivateRoute';
+import { refreshToken } from './api';
+import { setAccessToken } from './store/authSlice';
+import store from './store';
 
 const App = () => {
+
+  // Add logic to refresh token on page load
+useEffect(() => {
+  const refreshAccessToken = async () => {
+    try {
+      const response = await refreshToken();
+      const accessToken = response.data.accessToken;
+      store.dispatch(setAccessToken(accessToken));
+    } catch (error) {
+      console.error('Error refreshing token on page load:', error);
+      store.dispatch(setAccessToken(null));
+      window.location.href = '/signin';
+    }
+  };
+
+  refreshAccessToken();
+}, []);
+
   return (
     <Router>
       <Routes>
