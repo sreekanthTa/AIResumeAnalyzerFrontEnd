@@ -5,11 +5,12 @@ const ProblemDetails = ({ selectedProblem, selectedSolution }) => {
   if (selectedProblem) {
     return (
       <div>
+        <h3 className={styles.problemDescription}>{selectedProblem.title}</h3>
         <p className={styles.problemDescription}>{selectedProblem.description}</p>
         <h3>Sample Input</h3>
-        <pre className={styles.sampleInput}>{selectedProblem.sampleInput}</pre>
+        <pre className={styles.sampleInput}>{selectedProblem.sample_input}</pre>
         <h3>Sample Output</h3>
-        <pre className={styles.sampleOutput}>{selectedProblem.sampleOutput}</pre>
+        <pre className={styles.sampleOutput}>{selectedProblem.sample_output}</pre>
       </div>
     );
   } else if (selectedSolution) {
