@@ -14,6 +14,14 @@
   padding: 1rem;
 }
 
+.questions-title {
+  font-size: 2rem; /* Larger font size for better visibility */
+  font-weight: bold; /* Bold font for emphasis */
+  color: #1f2937; /* Darker color for better readability */
+  text-align: center; /* Center align the heading */
+  margin-bottom: 1.5rem; /* Add spacing below the heading */
+}
+
 .questions-list h1 {
   font-size: 1.5rem;
   font-weight: 700;
@@ -168,4 +176,12 @@ button:last-child {
   border-radius: 6px;
   overflow-x: auto;
   white-space: pre-wrap;
+}
+
+/* Add ellipsis for long question titles */
+.question-title {
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  max-width: 15rem; /* Set a maximum width */
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getAllQuestions } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import './QuestionsPage.css';
+import ProblemDetails from '../../components/ProblemDetail/problemDetail'; // Adjust the import path as necessary 
+import QuestionsTable from '../../components/QuestionsTable';
 
 const QuestionsPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -10,7 +12,7 @@ const QuestionsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalQuestions, setTotalQuestions] = useState(1);
-  const [limit, setLimit] = useState(5); // Default limit for pagination
+  const [limit, setLimit] = useState(10); // Default limit for pagination
   const [offset, setOffset] = useState(0); // Default offset for pagination
   const navigate = useNavigate();
 
@@ -50,54 +52,24 @@ const QuestionsPage = () => {
     setSelectedProblem(null); // Clear the problem description
   };
 
-  const handleViewProblem = (description, sampleInput, sampleOutput) => {
+  const handleViewProblem = (question) => {
     setSelectedSolution(null); // Clear the solution view
-    setSelectedProblem({ description, sampleInput, sampleOutput }); // Set the problem description, sample input, and sample output
+    setSelectedProblem({...question}); // Set the problem description, sample input, and sample output
   };
 
   return (
     <div className="questions-page">
       <div className="questions-list">
-        <h1 className="questions-title">Questions</h1>
-        <div className="questions-summary">
+        <h1 className="questions-title">Questions: {offset} - {limit+offset}</h1>
+        {/* <div className="questions-summary">
           <p>Total Questions: {totalQuestions}</p>
-          <div className="limit-dropdown">
-            <label htmlFor="limit">Questions per page:</label>
-            <select id="limit" value={limit} onChange={handleLimitChange}>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-            </select>
-          </div>
-        </div>
-        <table className="questions-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Difficulty</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {questions && questions.length > 0 ? (
-              questions.map((question) => (
-                <tr key={question.id} className="question-row">
-                  <td>{question.title}</td>
-                  <td className={`difficulty ${question.difficulty.toLowerCase()}`}>{question.difficulty}</td>
-                  <td>
-                    <button className="view-button" onClick={() => handleViewSolution(question.solution)}>View Solution</button>
-                    <button className="code-button" onClick={() => handleQuestionClick(question.id)}>Go to Code</button>
-                    <button className="problem-button" onClick={() => handleViewProblem(question.description, question.sample_input, question.sample_output)}>View Problem</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3" className="no-questions">No questions available.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        </div> */}
+        <QuestionsTable
+          questions={questions}
+          handleViewSolution={handleViewSolution}
+          handleQuestionClick={handleQuestionClick}
+          handleViewProblem={handleViewProblem}
+        />
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, index) => (
             <button
@@ -109,22 +81,18 @@ const QuestionsPage = () => {
             </button>
           ))}
         </div>
+        <div className="limit-dropdown">
+          <label htmlFor="limit">Questions per page:</label>
+          <select id="limit" value={limit} onChange={handleLimitChange}>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+          </select>
+        </div>
       </div>
       <div className="solution-container">
         <h1>Details</h1>
-        {selectedProblem ? (
-          <div>
-            <p className="problem-description">{selectedProblem.description}</p>
-            <h3>Sample Input</h3>
-            <pre className="sample-input">{selectedProblem.sampleInput}</pre>
-            <h3>Sample Output</h3>
-            <pre className="sample-output">{selectedProblem.sampleOutput}</pre>
-          </div>
-        ) : selectedSolution ? (
-          <pre className="solution-code">{selectedSolution}</pre>
-        ) : (
-          <p>Select a question to view its details.</p>
-        )}
+        <ProblemDetails selectedProblem={selectedProblem} selectedSolution={selectedSolution} />
       </div>
     </div>
   );

@@ -1,0 +1,49 @@
+/* Styles for ProblemDetails component */
+.problem-description {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.sample-input,
+.sample-output {
+  background-color: #f5f7fa;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.sample-input {
+  color: #2563eb;
+}
+
+.sample-output {
+  color: #059669;
+}
+
+.solution-code {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 6px;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  font-size: 1rem;
+  color: #374151;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 600px) {
+  .problem-description,
+  .sample-input,
+  .sample-output,
+  .solution-code {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.5rem;
+  }
+}

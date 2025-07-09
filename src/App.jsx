@@ -28,7 +28,7 @@ useEffect(() => {
     }
   };
 
-  refreshAccessToken();
+  // refreshAccessToken();
 }, []);
 
   return (
