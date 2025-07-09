@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getAllQuestions } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import './QuestionsPage.css';
 import ProblemDetails from '../../components/ProblemDetail/problemDetail'; // Adjust the import path as necessary 
 import QuestionsTable from '../../components/QuestionsTable';
+import { debounce } from '../../utils/PrivateRoute';
 
 const QuestionsPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -14,22 +15,25 @@ const QuestionsPage = () => {
   const [totalQuestions, setTotalQuestions] = useState(1);
   const [limit, setLimit] = useState(10); // Default limit for pagination
   const [offset, setOffset] = useState(0); // Default offset for pagination
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const getQuestions = async (limit_, offset_) => {
+  const getQuestions = React.useCallback(async (limit_, offset_, search = "") => {
     try {
-      const response = await getAllQuestions(limit_, offset_);
+      const response = await getAllQuestions(limit_, offset_, search);
       setQuestions(response.data.paginatedData);
-      setTotalPages(Math.ceil(response.data.totalCount / limit));
+      setTotalPages(Math.ceil(response.data.totalCount / limit_));
       setTotalQuestions(response.data.totalCount);
     } catch (error) {
       console.error('Error fetching questions:', error);
     }
-  };
+  }, []);
 
-  useEffect(() => {
-    getQuestions(limit, offset);
-  }, [limit]);
+  const debounceFunc = React.useMemo(() => debounce(getQuestions, 700), [getQuestions]);
+
+  React.useEffect(() => {
+    debounceFunc(limit, offset, searchTerm);
+  }, [limit, offset, searchTerm, debounceFunc]);
 
   const handleQuestionClick = (id) => {
     navigate(`/coding-editor/${id}`);
@@ -37,14 +41,14 @@ const QuestionsPage = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    getQuestions(limit, (page - 1) * limit);
-    setOffset((page - 1) * limit); // Update offset based on the current page
+    getQuestions(limit, (page - 1) * limit, searchTerm);
+    setOffset((page - 1) * limit);
   };
 
   const handleLimitChange = (event) => {
     setLimit(Number(event.target.value));
-    getQuestions(Number(event.target.value), offset);
-    setCurrentPage(1); // Reset to the first page when limit changes
+    getQuestions(Number(event.target.value), offset, searchTerm);
+    setCurrentPage(1);
   };
 
   const handleViewSolution = (solution) => {
@@ -61,9 +65,13 @@ const QuestionsPage = () => {
     <div className="questions-page">
       <div className="questions-list">
         <h1 className="questions-title">Questions: {offset} - {limit+offset}</h1>
-        {/* <div className="questions-summary">
-          <p>Total Questions: {totalQuestions}</p>
-        </div> */}
+        <input
+          type="text"
+          placeholder="Search questions..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          className="questions-search"
+        />
         <QuestionsTable
           questions={questions}
           handleViewSolution={handleViewSolution}

@@ -14,3 +14,17 @@ const PrivateRoute = ({ children }) => {
 };
 
 export default PrivateRoute;
+
+
+//debounce
+export const debounce = (func, setTimeOut) =>{
+
+  let timer;
+ 
+  return (...args) => {
+    clearTimeout(timer);
+    timer=setTimeout(() => {
+      func(...args);
+    }, setTimeOut);
+  }
+}
