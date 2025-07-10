@@ -10,18 +10,19 @@ const QuestionsPage = () => {
   const [questions, setQuestions] = useState([]);
   const [selectedSolution, setSelectedSolution] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalQuestions, setTotalQuestions] = useState(1);
   const [limit, setLimit] = useState(10); // Default limit for pagination
   const [offset, setOffset] = useState(0); // Default offset for pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [difficulty, setDifficulty] = useState('');
+  const [category, setCategory] = useState('');
   const navigate = useNavigate();
 
-  const getQuestions = React.useCallback(async (limit_, offset_, search = "", difficulty_ = "") => {
+  const getQuestions = React.useCallback(async (limit_, offset_, search = "", difficulty_ = "", catgory_="") => {
     try {
-      const response = await getAllQuestions(limit_, offset_, search, difficulty_);
+      const response = await getAllQuestions(limit_, offset_, search, difficulty_, catgory_);
       setQuestions(response.data.paginatedData);
       setTotalPages(Math.ceil(response.data.totalCount / limit_));
       setTotalQuestions(response.data.totalCount);
@@ -33,8 +34,8 @@ const QuestionsPage = () => {
   const debounceFunc = React.useMemo(() => debounce(getQuestions, 700), [getQuestions]);
 
   React.useEffect(() => {
-    debounceFunc(limit, offset, searchTerm, difficulty);
-  }, [limit, offset, searchTerm, difficulty, debounceFunc]);
+    debounceFunc(limit, offset, searchTerm, difficulty, category);
+  }, [limit, offset, searchTerm, difficulty, category, debounceFunc]);
 
   const handleQuestionClick = (id) => {
     navigate(`/coding-editor/${id}`);
@@ -42,16 +43,18 @@ const QuestionsPage = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    getQuestions(limit, (page - 1) * limit, searchTerm);
-    setOffset((page - 1) * limit);
+    getQuestions(limit, page  * limit, searchTerm);
+    setOffset(page  * limit);
   };
+ 
 
   const handleLimitChange = (event) => {
     setLimit(Number(event.target.value));
     getQuestions(Number(event.target.value), offset, searchTerm);
     setCurrentPage(1);
   };
-
+  
+ 
   const handleViewSolution = (solution) => {
     setSelectedSolution(solution);
     setSelectedProblem(null); // Clear the problem description
@@ -65,7 +68,14 @@ const QuestionsPage = () => {
   const handleDifficultyChange = (event) => {
     setDifficulty(event.target.value);
     setCurrentPage(1);
-    getQuestions(limit, 0, searchTerm, event.target.value);
+    // getQuestions(limit, 0, searchTerm, event.target.value, category);
+    setOffset(0);
+  };
+
+  const handleCategoryChange =(event) => {
+    setCategory(event.target.value);
+    setCurrentPage(1);
+    // getQuestions(limit, 0, searchTerm, event.target.value, category);
     setOffset(0);
   };
 
@@ -90,14 +100,18 @@ const QuestionsPage = () => {
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
           </select>
-          <span className="questions-count">
-            Showing {questions.length} of {totalQuestions} questions
-          </span>
-          <select id="limit" value={limit} onChange={handleLimitChange} className="questions-limit-select">
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
+
+          <select value={category} onChange={handleCategoryChange} className="questions-difficulty-select">
+            <option value="">All</option>
+            <option value="string">String</option>
+            <option value="array">Array</option>
+            <option value="linked_list">Linked List</option>
           </select>
+          {/* <span className="questions-count">
+            Showing {questions.length} of {totalQuestions} questions {offset} {limit} {currentPage}
+          </span> */}
+          
+          
         </div>
         
 
@@ -108,7 +122,7 @@ const QuestionsPage = () => {
           handleQuestionClick={handleQuestionClick}
           handleViewProblem={handleViewProblem}
         />
-        <div className="pagination">
+        {/* <div className="pagination">
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index + 1}
@@ -118,8 +132,22 @@ const QuestionsPage = () => {
               {index + 1}
             </button>
           ))}
+        </div> */}
+        <div className='pagination-container'>
+        
+          <select id="limit" value={limit} onChange={handleLimitChange} className="questions-limit-select">
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+          </select>
+
+          <div className="pagination-buttons">
+        <button className={currentPage ==0   ? 'disabled':''} onClick={() => handlePageChange(currentPage - 1)} > {'<'} </button>
+        <button className={(offset + limit) >= totalQuestions    ? 'disabled':''} onClick={() => handlePageChange(currentPage + 1)} > {'>'} </button>
         </div>
       </div>
+        </div>
+       
       <div className="solution-container">
         <h1>Details</h1>
         <ProblemDetails selectedProblem={selectedProblem} selectedSolution={selectedSolution} />

@@ -60,13 +60,14 @@ export const chatWithAI = (messages, description) => {
 
 
 // Coding Editor APIs
-export const getAllQuestions = (limit, offset, search=null, difficulty) => {
+export const getAllQuestions = (limit, offset, search=null, difficulty=null, category=null) => {
   return apiClient.get(`/api/questions`, {
     params: {
       limit: parseInt(limit, 10),
       offset: parseInt(offset, 10),
       search,
-      difficulty
+      difficulty,
+      category
     },
   });
 };

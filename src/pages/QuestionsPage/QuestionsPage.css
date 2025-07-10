@@ -69,6 +69,38 @@
   border-color: #4a90e2;
 }
 
+.pagination-buttons{
+  display: flex;
+  justify-content: center;
+  gap: 0.2rem;
+  /* align-self: flex-end; */
+  margin-left: 0 auto;
+}
+
+.pagination-buttons button{
+  padding:0.2rem 0.5rem;
+
+}
+
+.pagination-buttons .disabled{
+  pointer-events: none;
+}
+
+.pagination-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+}
+
+.questions-limit-select{
+ padding: 0.2rem 0.3rem;
+ margin: 0 auto;
+ 
+}
+
 /* Limit dropdown styles */
 .limit-dropdown {
   display: flex;

@@ -11,10 +11,11 @@ const ProblemDetails = ({ selectedProblem, selectedSolution }) => {
         <pre className={styles.sampleInput}>{selectedProblem.sample_input}</pre>
         <h3>Sample Output</h3>
         <pre className={styles.sampleOutput}>{selectedProblem.sample_output}</pre>
+        <h3>Solution</h3>
+        <pre className={styles.solutionCode}>{selectedProblem.solution}</pre>
       </div>
-    );
-  } else if (selectedSolution) {
-    return <pre className={styles.solutionCode}>{selectedSolution}</pre>;
+        )
+ 
   } else {
     return <p>Select a question to view its details.</p>;
   }
