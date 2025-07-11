@@ -8,8 +8,27 @@ import { CodingEditor } from "../../components/CodingEditor/CodingEditor";
 const CodingEditorPage = () => {
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
-  const [code, setCode] = useState(""); // Add missing state for code and setCode
-  const [logs, setLogs] = useState([]); // Add missing state for logs
+  const [code, setCode] = useState(""); // State for code and setCode
+  const [logs, setLogs] = useState([]); // State for logs
+  const [testResults, setTestResults] = useState([]); // Store individual test case results
+  const workerRef = React.useRef(null);
+
+  const editorRef = React.useRef(null);
+
+  // Callback to get the editor instance
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
+  }
+  
+
+  // Load WebWorker
+  useEffect(() => {
+    workerRef.current = new Worker("/worker.js");
+
+    return () => {
+      workerRef.current.terminate();
+    };
+  }, []);
 
   useEffect(() => {
     const getProblem = async () => {
@@ -18,7 +37,7 @@ const CodingEditorPage = () => {
         setProblem(response.data);
         setCode(
           response.data.starter_code || "// Write your JavaScript code here"
-        ); // Set initial code
+        );
       } catch (error) {
         console.error("Error fetching problem:", error);
       }
@@ -32,46 +51,59 @@ const CodingEditorPage = () => {
   if (!problem) {
     return <div>Loading...</div>;
   }
-
-  // Ensure testCases is defined correctly
-  const testCases = [
-    {
-      input: problem.sample_input,
-      expectedOutput: problem.sample_output,
-    },
-  ];
-
+ 
+  
   const handleExecute = () => {
-    const logCollector = [];
-    const originalConsoleLog = console.log;
+    const results = [];
 
-    try {
-      // Override console.log to capture output for UI only
-      console.log = (...args) => {
-        logCollector.push(
-          args
-            .map((arg) =>
-              typeof arg === "object" ? JSON.stringify(arg) : String(arg)
-            )
-            .join(" ")
-        );
-        // Do NOT print to real console
-      };
+    setTestResults([]); // Clear previous results
+    setLogs([]); // Clear logs if you want
 
-      const userFunction = new Function(code);
-      const result = userFunction();
+    let index = 0;
 
-      if (result !== undefined) {
-        logCollector.push(`Return: ${result}`);
+    const runTest = () => {
+      if (index >= problem.test_cases?.length) {
+        setTestResults(results); // Save results to state for UI
+        setLogs(results); // Optionally also show logs in logs section
+        return;
       }
 
-      setLogs(logCollector);
-    } catch (error) {
-      setLogs([`❌ Error: ${error.message}`]);
-    } finally {
-      console.log = originalConsoleLog; // Restore the original console
-    }
+      const test_case = problem.test_cases[index];
+
+      let parsedInput = test_case.input;
+      let parsedOutput = test_case.output;
+
+      try {
+        parsedInput = JSON.parse(parsedInput);
+      } catch {}
+
+      try {
+        parsedOutput = JSON.parse(parsedOutput);
+      } catch {}
+
+      workerRef.current.onmessage = (e) => {
+        const { result, error } = e?.data;
+        console.log("srdtfyg", parsedInput,parsedOutput)
+
+        if (error) {
+          results.push(`❌ Error: ${error}`);
+        } else {
+          const passed = JSON.stringify(result) === JSON.stringify(parsedOutput);
+          results.push(
+            `${JSON.stringify(result)} ${passed ? "✅" : "❌"}`
+          );
+        }
+
+        index++;
+        runTest();
+      };
+
+      workerRef.current.postMessage({ code, input: parsedInput });
+    };
+
+    runTest();
   };
+
 
   return (
     <div className="coding-editor-page">
@@ -81,12 +113,10 @@ const CodingEditorPage = () => {
           Difficulty: <span>{problem.difficulty}</span>
         </p>
         <p className="problem-date">
-          Created At:{" "}
-          <span>{new Date(problem.created_at).toLocaleString()}</span>
+          Created At: <span>{new Date(problem.created_at).toLocaleString()}</span>
         </p>
         <p className="problem-date">
-          Updated At:{" "}
-          <span>{new Date(problem.updated_at).toLocaleString()}</span>
+          Updated At: <span>{new Date(problem.updated_at).toLocaleString()}</span>
         </p>
         <p className="problem-description">{problem.description}</p>
         <h2 className="problem-question">Question</h2>
@@ -107,24 +137,50 @@ const CodingEditorPage = () => {
           </tbody>
         </table>
       </div>
+
       <div className="editor-container">
         <CodingEditor
           height={"75vh"}
           code={code}
           setCode={setCode}
-          testCases={testCases}
-          logs={logs} // Ensure logs are passed as a prop
+          logs={logs}
+
         />
 
         <button onClick={handleExecute} className="execute-button">
           Execute Code
         </button>
-        <div className="logs-container">
-          {/* <h3>Logs</h3> */}
+
+        <div className="test-cases" style={{ marginTop: "20px" }}>
+          {problem.test_cases?.map((e, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                gap: "20px",
+                borderBottom: "1px solid #ddd",
+                padding: "8px 0",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ flex: 2 }}>
+                <strong>Input:</strong> {e?.input}
+              </div>
+              <div style={{ flex: 2 }}>
+                <strong>Expected:</strong> {e?.output}
+              </div>
+              <div style={{ flex: 3 }}>
+                <strong>Result:</strong> {testResults[i] || "Not run yet"}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* <div className="logs-container">
           {logs.map((log, index) => (
             <p key={index}>{log}</p>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

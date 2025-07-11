@@ -33,7 +33,6 @@ export const CodingEditor = ({height, code, setCode}) => {
       lineNumbers: "on",
       }}
       className="editor"
-
   />
   );
 }
