@@ -12,10 +12,10 @@ const Signup = () => {
     e.preventDefault();
     try {
       const response = await signup(name, email, password);
-      console.log('Signup successful:', response.data);
+      
       alert('Account created successfully! You can now sign in.');
     } catch (error) {
-      console.error('Error during signup:', error);
+      
       alert('Failed to sign up. Please try again later.');
     }
   };
