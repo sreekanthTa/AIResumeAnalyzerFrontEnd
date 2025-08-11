@@ -82,11 +82,13 @@ const QuestionsPage = () => {
   return (
     <div className="questions-page">
       <div className="questions-list">
-        <h1 className="questions-title">
-          Questions: {offset} - {limit+offset}
-          <span className="questions-total"> (Total: {totalQuestions})</span>
-        </h1>
-        <div className="questions-search-bar">
+        <div className="questions-list-header">
+          <div className="questions-list-title-group">
+            <h2 className="questions-title">Coding Questions</h2>
+            <span className="questions-range">Showing {offset + 1} - {Math.min(offset + limit, totalQuestions)} of {totalQuestions}</span>
+          </div>
+        </div>
+        <div className="questions-search-bar beautify">
           <input
             type="text"
             placeholder="Search questions..."
@@ -95,61 +97,39 @@ const QuestionsPage = () => {
             className="questions-search"
           />
           <select value={difficulty} onChange={handleDifficultyChange} className="questions-difficulty-select">
-            <option value="">All</option>
+            <option value="">All Difficulties</option>
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
           </select>
-
           <select value={category} onChange={handleCategoryChange} className="questions-difficulty-select">
-            <option value="">All</option>
+            <option value="">All Categories</option>
             <option value="string">String</option>
             <option value="array">Array</option>
             <option value="linked_list">Linked List</option>
           </select>
-          {/* <span className="questions-count">
-            Showing {questions.length} of {totalQuestions} questions {offset} {limit} {currentPage}
-          </span> */}
-          
-          
         </div>
-        
-
-
         <QuestionsTable
           questions={questions}
           handleViewSolution={handleViewSolution}
           handleQuestionClick={handleQuestionClick}
           handleViewProblem={handleViewProblem}
         />
-        {/* <div className="pagination">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div> */}
         <div className='pagination-container'>
-        
           <select id="limit" value={limit} onChange={handleLimitChange} className="questions-limit-select">
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={15}>15</option>
           </select>
-
           <div className="pagination-buttons">
-        <button className={currentPage ==0   ? 'disabled':''} onClick={() => handlePageChange(currentPage - 1)} > {'<'} </button>
-        <button className={(offset + limit) >= totalQuestions    ? 'disabled':''} onClick={() => handlePageChange(currentPage + 1)} > {'>'} </button>
+            <button className={currentPage === 0 ? 'disabled' : ''} onClick={() => handlePageChange(currentPage - 1)}>{'<'}</button>
+            <button className={(offset + limit) >= totalQuestions ? 'disabled' : ''} onClick={() => handlePageChange(currentPage + 1)}>{'>'}</button>
+          </div>
         </div>
       </div>
-        </div>
        
       <div className="solution-container">
-        <h1>Details</h1>
+        {(!selectedProblem && !selectedSolution) && <h1>Details</h1>}
         <ProblemDetails selectedProblem={selectedProblem} selectedSolution={selectedSolution} />
       </div>
     </div>

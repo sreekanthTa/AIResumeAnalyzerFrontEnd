@@ -1,14 +1,12 @@
 .questions-page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 400px;
   gap: 1.5rem;
   padding: 1.5rem;
   background-color: #f8fafc;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   box-sizing: border-box;
-  max-width: 1800px;
-  margin: 0 auto;
 }
 
 .questions-list {
