@@ -9,74 +9,122 @@
 
 .problem-container {
   flex: 1;
-  padding: 1rem;
+  padding: 1.25rem;
   background-color: #ffffff;
-  border-right: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #e5e7eb;
   overflow-y: auto;
 }
 
-.problem-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #333;
+.problem-metadata {
   margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.problem-dates {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.813rem;
+}
+
+.problem-section {
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.problem-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 .problem-difficulty {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 0.5rem;
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.813rem;
+  font-weight: 500;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  align-items: center;
+  height: 24px;
+}
+
+.problem-difficulty span {
+  font-weight: 600;
 }
 
 .problem-date {
-  font-size: 0.9rem;
-  color: #777;
-  margin-bottom: 0.5rem;
+  font-size: 0.813rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.problem-date svg {
+  color: #9ca3af;
+  width: 14px;
+  height: 14px;
+}
+
+.problem-date span {
+  color: #374151;
+  font-weight: 500;
 }
 
 .problem-description {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 1rem;
+  font-size: 0.938rem;
+  line-height: 1.5;
+  color: #374151;
+  margin: 0;
 }
 
-.problem-question {
-  font-size: 1.25rem;
+.problem-question, .problem-sample, .problem-description {
+  font-size: 0.875rem;
   font-weight: 600;
-  color: #333;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.problem-sample {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  color: #374151;
+  margin: 1rem 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .sample-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-top: 0.5rem;
+  border: 1px solid #e5e7eb;
+  font-size: 0.875rem;
 }
 
 .sample-table th,
 .sample-table td {
-  border: 1px solid #ddd;
-  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .sample-table th {
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   font-weight: 600;
+  color: #4b5563;
+  font-size: 0.813rem;
 }
 
 .sample-table td {
   background-color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.813rem;
+  color: #374151;
+  line-height: 1.4;
 }
 
 .editor-container {
