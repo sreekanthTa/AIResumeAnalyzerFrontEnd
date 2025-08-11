@@ -131,6 +131,24 @@ const CodingEditorPage = () => {
           <p>{problem.description}</p>
         </div>
 
+           <div className={styles["problem-section"]}>
+          <h2 className={styles["section-title"]}>Sample Input/Output</h2>
+          <table className={styles["sample-table"]}>
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{problem.sample_input}</td>
+                <td>{problem.sample_output}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         {steps.steps_to_solve && (
           <div className={styles["problem-section"]}>
             <h2 className={styles["section-title"]}>Steps to Solve</h2>
@@ -173,23 +191,7 @@ const CodingEditorPage = () => {
           </div>
         )}
 
-        <div className={styles["problem-section"]}>
-          <h2 className={styles["section-title"]}>Sample Input/Output</h2>
-          <table className={styles["sample-table"]}>
-            <thead>
-              <tr>
-                <th>Input</th>
-                <th>Output</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{problem.sample_input}</td>
-                <td>{problem.sample_output}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+     
       </div>
 
       <div className={styles["editor-container"]}>
