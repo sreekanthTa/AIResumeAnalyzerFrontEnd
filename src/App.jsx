@@ -37,10 +37,14 @@ useEffect(() => {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/questions" element={<PrivateRoute><QuestionsPage /></PrivateRoute>} />
+        {/* <Route path="/questions" element={<PrivateRoute><QuestionsPage /></PrivateRoute>} />
         <Route path="/coding" element={<PrivateRoute><CodingPage /></PrivateRoute>} />
         <Route path="/coding-editor/:id" element={<PrivateRoute><CodingEditorPage /></PrivateRoute>} />
-        <Route path="/analyzer" element={<PrivateRoute><Analyzer /></PrivateRoute>} />
+        <Route path="/analyzer" element={<PrivateRoute><Analyzer /></PrivateRoute>} /> */}
+         <Route path="/questions" element={<QuestionsPage />} />
+        <Route path="/coding" element={<CodingPage />} />
+        <Route path="/coding-editor/:id" element={<CodingEditorPage />} />
+        <Route path="/analyzer" element={<Analyzer />} />
       </Routes>
     </Router>
   );

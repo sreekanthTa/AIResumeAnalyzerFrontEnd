@@ -40,7 +40,7 @@ const Navbar = () => {
           <Link to="/signup">Signup</Link>
         </li>
         </>}
-        {accessToken && <>
+        {/* {accessToken && <> */}
         <li className="navbar-item">
           <Link to="/questions">Questions</Link>
         </li>
@@ -53,7 +53,7 @@ const Navbar = () => {
         <li className="navbar-item" onClick={handleLogout}>
         <Link to="/">Logout</Link>
       </li>
-      </>}
+      {/* </>} */}
       </ul>
     </nav>
   );
