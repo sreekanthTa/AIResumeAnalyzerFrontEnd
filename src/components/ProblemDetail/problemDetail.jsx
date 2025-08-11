@@ -1,20 +1,46 @@
 import React from 'react';
-import  styles from "./problemDetail.module.css"; // Assuming you have a CSS file for styling
+import styles from "./problemDetail.module.css";
+
 const ProblemDetails = ({ selectedProblem, selectedSolution }) => {
-    console.log("selectedProblem", selectedProblem);    
   if (selectedProblem) {
     return (
-      <div>
-        <h3 className={styles.problemDescription}>{selectedProblem.title}</h3>
-        <p className={styles.problemDescription}>{selectedProblem.description}</p>
-        <h3>Sample Input</h3>
-        <pre className={styles.sampleInput}>{selectedProblem.sample_input}</pre>
-        <h3>Sample Output</h3>
-        <pre className={styles.sampleOutput}>{selectedProblem.sample_output}</pre>
-        <h3>Solution</h3>
-        <pre className={styles.solutionCode}>{selectedProblem.solution}</pre>
+      <div className={styles.problemContainer}>
+        <header className={styles.problemHeader}>
+          <h1 className={styles.problemTitle}>{selectedProblem.title}</h1>
+          {selectedProblem.difficulty && (
+            <span className={`${styles.difficultyBadge} ${styles[`difficulty-${selectedProblem.difficulty.toLowerCase()}`]}`}>
+              {selectedProblem.difficulty}
+            </span>
+          )}
+        </header>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Problem Description</h2>
+          <p className={styles.description}>{selectedProblem.description}</p>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Sample Input/Output</h2>
+          <div className={styles.sampleContainer}>
+            <div className={styles.sampleBox}>
+              <h3 className={styles.sampleTitle}>Input</h3>
+              <pre className={styles.sampleContent}>{selectedProblem.sample_input}</pre>
+            </div>
+            <div className={styles.sampleBox}>
+              <h3 className={styles.sampleTitle}>Output</h3>
+              <pre className={styles.sampleContent}>{selectedProblem.sample_output}</pre>
+            </div>
+          </div>
+        </section>
+
+        {selectedProblem.solution && (
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Solution</h2>
+            <pre className={styles.solutionCode}>{selectedProblem.solution}</pre>
+          </section>
+        )}
       </div>
-        )
+    )
  
   } else {
     return <p>Select a question to view its details.</p>;
