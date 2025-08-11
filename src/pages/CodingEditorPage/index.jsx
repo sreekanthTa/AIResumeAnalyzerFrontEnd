@@ -59,7 +59,7 @@ const CodingEditorPage = () => {
     return <div>Loading...</div>;
   }
  
-  
+  console.log("Problem data:", problem);
   const handleExecute = () => {
     setTestResults([]); // Clear previous results
     setLogs([]); // Clear logs if you want
@@ -111,9 +111,13 @@ const CodingEditorPage = () => {
         <p className={styles["problem-date"]}>
           Updated At: <span>{new Date(problem.updated_at).toLocaleString()}</span>
         </p>
-        <p className={styles["problem-description"]}>{problem.description}</p>
         <h2 className={styles["problem-question"]}>Question</h2>
         <p>{problem.question}</p>
+        <br/>
+        <h2 className={styles["problem-description"]}>Question</h2>
+        <p>{problem.description}</p>
+
+    
         <h2 className={styles["problem-sample"]}>Sample Input/Output</h2>
         <table className={styles["sample-table"]}>
           <thead>
