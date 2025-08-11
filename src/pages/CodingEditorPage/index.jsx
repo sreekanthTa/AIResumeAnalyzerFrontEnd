@@ -18,6 +18,8 @@ const CodingEditorPage = () => {
     issues_found: [],
     test_source: '',
   });
+
+  const steps = problem?.steps
   const workerRef = React.useRef(null);
 
   const editorRef = React.useRef(null);
@@ -125,26 +127,69 @@ const CodingEditorPage = () => {
         </header>
 
         <div className={styles["problem-section"]}>
-          <h2 className={styles["problem-description"]}>Problem Description</h2>
+          <h2 className={styles["section-title"]}>Problem Description</h2>
           <p>{problem.description}</p>
         </div>
 
-    
-        <h2 className={styles["problem-sample"]}>Sample Input/Output</h2>
-        <table className={styles["sample-table"]}>
-          <thead>
-            <tr>
-              <th>Input</th>
-              <th>Output</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{problem.sample_input}</td>
-              <td>{problem.sample_output}</td>
-            </tr>
-          </tbody>
-        </table>
+        {steps.steps_to_solve && (
+          <div className={styles["problem-section"]}>
+            <h2 className={styles["section-title"]}>Steps to Solve</h2>
+            <ul className={styles["steps-list"]}>
+              {steps.steps_to_solve.map((step, index) => (
+                <li key={index}>{step}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {steps.edge_cases && (
+          <div className={styles["problem-section"]}>
+            <h2 className={styles["section-title"]}>Edge Cases to Consider</h2>
+            <ul className={styles["edge-cases-list"]}>
+              {steps.edge_cases.map((edge, index) => (
+                <li key={index}>{edge}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {(steps.time_complexity_estimate || steps.space_complexity_estimate) && (
+          <div className={styles["problem-section"]}>
+            <h2 className={styles["section-title"]}>Complexity Analysis</h2>
+            <div className={styles["complexity-info"]}>
+              {steps.time_complexity_estimate && (
+                <div className={styles["complexity-item"]}>
+                  <span className={styles["complexity-label"]}>Time Complexity:</span>
+                  <code className={styles["complexity-value"]}>{steps.time_complexity_estimate}</code>
+                </div>
+              )}
+              {steps.space_complexity_estimate && (
+                <div className={styles["complexity-item"]}>
+                  <span className={styles["complexity-label"]}>Space Complexity:</span>
+                  <code className={styles["complexity-value"]}>{steps.space_complexity_estimate}</code>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className={styles["problem-section"]}>
+          <h2 className={styles["section-title"]}>Sample Input/Output</h2>
+          <table className={styles["sample-table"]}>
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{problem.sample_input}</td>
+                <td>{problem.sample_output}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className={styles["editor-container"]}>
