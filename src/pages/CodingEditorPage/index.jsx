@@ -23,11 +23,7 @@ const CodingEditorPage = () => {
   const workerRef = React.useRef(null);
 
   const editorRef = React.useRef(null);
-
-  // Callback to get the editor instance
-  function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
-  }
+ 
   
 
   // Load WebWorker

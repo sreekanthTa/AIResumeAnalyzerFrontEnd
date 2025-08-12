@@ -9,7 +9,7 @@
 
 .problem-container {
   flex: 1;
-  max-width: 800px;
+  /* max-width: 800px; */
   padding: 1.25rem;
   background-color: #ffffff;
   border-right: 1px solid #e5e7eb;
