@@ -74,3 +74,13 @@ export const getAllQuestions = (limit, offset, search=null, difficulty=null, cat
 export const getQuestionById = (questionId) => {
   return apiClient.get(`/api/questions/${questionId}`);
 }
+
+export const searchWebQuestions = (question) => {
+  return apiClient.get(`/api/questions/search_question_in_web`, {
+    params: { question },
+  });
+}
+
+export const createNewWebQuestion = (questionData) => {
+  return apiClient.post('/api/questions/create_new_web_question', questionData);
+} 
