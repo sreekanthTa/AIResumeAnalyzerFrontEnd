@@ -84,3 +84,7 @@ export const searchWebQuestions = (question) => {
 export const createNewWebQuestion = (questionData) => {
   return apiClient.post('/api/questions/create_new_web_question', questionData);
 } 
+
+export const chatWithQuestionAI = (chatData) => {
+  return apiClient.post('/api/questions/chat_with_user_about_problem' ,chatData)
+}

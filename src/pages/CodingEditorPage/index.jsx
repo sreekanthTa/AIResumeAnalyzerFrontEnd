@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import styles from "./CodingEditorPage.module.css";
-import { getQuestionById } from "../../api"; // Adjust the import path as necessary
+import { chatWithQuestionAI, getQuestionById } from "../../api"; // Adjust the import path as necessary
 import { CodingEditor } from "../../components/CodingEditor/CodingEditor";
 import axios from "axios";
+import AIChatBot from "../../components/AIChatBot/AIChatBot";
 
 const CodingEditorPage = () => {
   const { id } = useParams();
@@ -18,6 +19,13 @@ const CodingEditorPage = () => {
     issues_found: [],
     test_source: '',
   });
+
+  const [chatMessages, setChatMessages] = useState([]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [userQuestion, setUserQuestion] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [threadId, setThreadId] = useState(null);
+
 
   const steps = problem?.steps
   const workerRef = React.useRef(null);
@@ -94,6 +102,52 @@ const CodingEditorPage = () => {
 
  
   };
+
+
+  const handleAIChat = async (e) => {
+
+    e.preventDefault();
+    if (!userQuestion.trim()) return;
+
+    const newUserMessage = {
+      type: 'user',
+      content: userQuestion,
+      timestamp: new Date()
+    };
+    
+    setChatMessages(prev => [...prev, newUserMessage]);
+    setIsChatLoading(true);
+
+    try {
+      const result = await chatWithQuestionAI({
+        problem: problem,
+        code: code,
+        user_question: userQuestion,
+        thread_id: threadId ? threadId : null
+      })
+      console.log("AI Response:", result);
+      const {reply="", thread_id=null}  = result?.data?.result;
+      const newAiMessage = {
+        type: 'assistant',
+        content: reply,
+        timestamp: new Date()
+      };
+
+      setChatMessages(prev => [...prev, newAiMessage]);
+      setThreadId(thread_id);
+      setUserQuestion('');
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setChatMessages(prev => [...prev, {
+        type: 'error',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
 
 
   return (
@@ -288,6 +342,15 @@ const CodingEditorPage = () => {
             <p key={index}>{log}</p>
           ))}
         </div> */}
+        <AIChatBot 
+           isExpanded={isExpanded}
+           setIsExpanded={setIsExpanded}
+           userQuestion={userQuestion}
+           handleInputValue={setUserQuestion}
+           chatMessages={chatMessages}
+           isChatLoading={isChatLoading}
+           handleChatSubmit ={handleAIChat}
+        />
       </div>
     </div>
   );
