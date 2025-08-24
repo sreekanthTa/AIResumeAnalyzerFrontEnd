@@ -1,8 +1,45 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getAllQuestions, searchWebQuestions, createNewWebQuestion } from '../../api';
 import { useNavigate } from 'react-router-dom';
+
+        import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { getAllQuestions, searchWebQuestions, createNewWebQuestion } from '../../api';
+import { useNavigate } from 'react-router-dom';
 import './QuestionsPage.css';
 import ProblemDetails from '../../components/ProblemDetail/problemDetail';
+import QuestionsTable from '../../components/QuestionsTable';
+import { debounce } from '../../utils/PrivateRoute';
+import axios from 'axios';
+        {duplicateMessage && (
+          <div className="duplicate-message-container">
+            <div className="duplicate-message">
+              <h4>Question Already Exists</h4>
+              <p>{duplicateMessage.message}</p>
+              <div className="duplicate-actions">
+                <button 
+                  className="add-anyway-button"
+                  onClick={() => handleInsertToDb(duplicateMessage.webResult, true)}
+                >
+                  Add Anyway
+                </button>
+                <button 
+                  className="cancel-button"
+                  onClick={() => setDuplicateMessage(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Web Results Section */}
+        {isAddingMode && webResults.length > 0 && (
+          <div className="web-results-container">
+            <h3 className="web-results-title">Web Results</h3>
+            <div className="web-results-list">dom';
+import './QuestionsPage.css';
+import ProblemDetails from '../../components/ProblemDetail/problemDetail'; // Adjust the import path as necessary 
 import QuestionsTable from '../../components/QuestionsTable';
 import { debounce } from '../../utils/PrivateRoute';
 import axios from 'axios';
@@ -44,8 +81,12 @@ const QuestionsPage = () => {
     if (!searchTerm.trim()) return;
     try {
       setIsLoading(true);
+      // TODO: Replace with your actual web search API endpoint
       const response = await searchWebQuestions(searchTerm);
-      const data = response?.data || [];
+      const data =  response?.data || [];
+      console.log("response", data)
+      // const data = await response.json();
+      
       setWebResults(data?.results || []);
     } catch (error) {
       console.error('Error searching web questions:', error);
@@ -66,16 +107,18 @@ const QuestionsPage = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    getQuestions(limit, page * limit, searchTerm);
-    setOffset(page * limit);
+    getQuestions(limit, page  * limit, searchTerm);
+    setOffset(page  * limit);
   };
+ 
 
   const handleLimitChange = (event) => {
     setLimit(Number(event.target.value));
     getQuestions(Number(event.target.value), offset, searchTerm);
     setCurrentPage(1);
   };
-
+  
+ 
   const handleViewSolution = (solution) => {
     setSelectedSolution(solution);
     setSelectedProblem(null); // Clear the problem description
@@ -89,12 +132,14 @@ const QuestionsPage = () => {
   const handleDifficultyChange = (event) => {
     setDifficulty(event.target.value);
     setCurrentPage(1);
+    // getQuestions(limit, 0, searchTerm, event.target.value, category);
     setOffset(0);
   };
 
-  const handleCategoryChange = (event) => {
+  const handleCategoryChange =(event) => {
     setCategory(event.target.value);
     setCurrentPage(1);
+    // getQuestions(limit, 0, searchTerm, event.target.value, category);
     setOffset(0);
   };
 
@@ -120,7 +165,7 @@ const QuestionsPage = () => {
       console.error('Error inserting question:', error);
     }
   };
-
+  console.log("webResults",webResults)
   return (
     <div className="questions-page">
       <div className="questions-list">
@@ -134,10 +179,16 @@ const QuestionsPage = () => {
                   className={`add-question-toggle ${isAddingMode ? 'active' : ''}`}
                   onClick={() => setIsAddingMode(!isAddingMode)}
                 >
-                  {isAddingMode ? '×' : '+'}
-                </button>
+                {isAddingMode ? '×' : '+'}
+              </button>
               </span>
             </div>
+            {/* <button 
+              className={`add-question-toggle ${isAddingMode ? 'active' : ''}`}
+              onClick={() => setIsAddingMode(!isAddingMode)}
+            >
+              {isAddingMode ? '× Cancel' : '+ Add Question'}
+            </button> */}
           </div>
           
           {isAddingMode && (
@@ -183,44 +234,6 @@ const QuestionsPage = () => {
             </select>
           </div>
         </div>
-
-        {/* Duplicate Question Message */}
-        {duplicateMessage && (
-          <div className="duplicate-message-container">
-            <div className="duplicate-message">
-              <h4>Question Already Exists</h4>
-              <p>{duplicateMessage.message}</p>
-              
-              <div className="duplicate-question-details">
-                <div className="duplicate-question-header">
-                  <h5>{duplicateMessage?.title}</h5>
-                  <span className="web-result-difficulty" 
-                    data-difficulty={duplicateMessage?.difficulty}>
-                    {duplicateMessage?.difficulty}
-                  </span>
-                </div>
-                <p className="duplicate-question-description">
-                  {duplicateMessage?.description}
-                </p>
-              </div>
-
-              <div className="duplicate-actions">
-                <button 
-                  className="add-anyway-button"
-                  onClick={() => handleInsertToDb(duplicateMessage.webResult, true)}
-                >
-                  Add Anyway
-                </button>
-                <button 
-                  className="cancel-button"
-                  onClick={() => setDuplicateMessage(null)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Web Results Section */}
         {isAddingMode && webResults.length > 0 && (
